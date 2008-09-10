@@ -1,0 +1,28 @@
+Welcome to the source code for Flex on Rails. You will find one folder for each chapter and cookbook topic. Each folder will have a two subfolder, on for the Flex part of project and one for the part Rails project.
+
+01_Developing_with_Flex_and_Rails
+02_Passing_Data_with_XML
+03_Flex_with_RESTful_Services
+04_Testing
+05_Passing_Data_with_AMF
+06_Debugging
+07_Data_Visualization
+08_Flex_MVC_Frameworks
+09_Performance_and_Optimization
+10_Source_Control_Flex_and_Rails_Projects
+11_Building_Flex_with_Rake
+12_Deploying_Flex_and_Rails_Applications
+13_What_the_Heck_is_Going_on_in_There?
+14_Using_Observers_to_Clean_up_Code
+15_Authenticating
+16_Reusing_Commands_with_Prana_Sequences
+17_Hierarchical_Data_with_Ruby_AMF
+18_Advanced_Data_Grid_and_Awesome_Nested_Sets
+19_Runtime_Flex_Configuration_with_Prana
+20_Server_Push_with_Juggernaut
+21_Communicating_between_Flex_and_JavaScript
+22_File_Upload
+
+Enjoy!
+
+Daniel & Tony
