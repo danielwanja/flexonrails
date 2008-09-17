@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" applicationComplete="test()">
+<mx:Script>
+	<![CDATA[
+	import com.adobe.utils.DateUtil;
+	
+	private var errors:Number = 0;
+		
+		[Bindable]		
+		public var person:XML = 
+						<person>
+						  <address>denver</address>
+						  <bio nil="true"></bio>
+						  <birthday type="date">1965-06-21</birthday>
+						  <brithday_and_time type="datetime">1965-06-21T06:45:35Z</brithday_and_time>
+						  <created_at type="datetime">2007-12-07T09:29:48-07:00</created_at>
+						  <first_name>daniel</first_name>
+						  <flex_programmer type="boolean">true</flex_programmer>
+						  <id type="integer">1</id>
+						  <last_name>Wanja</last_name>
+						  <net_worth type="float">0.02</net_worth>
+						  <number_of_ipods type="integer">6</number_of_ipods>
+						  <rails_programmer type="boolean">true</rails_programmer>
+						  <updated_at type="datetime">2007-12-14T11:28:32-07:00</updated_at>
+						</person>;
+		
+		[Bindable]
+		private var testDate:Date;
+		
+		private function test():void {	
+			assertTrue(person.rails_programmer == true);
+			assertEquals(0.02, Number(person.net_worth));
+			assertEquals(6, Number(person.number_of_ipods));
+			assertEquals("1965/06/21", person.birthday.toString().replace(/\-/g, '/'));
+			assertEquals("Mon Jun 21 06:00:00 1965 UTC", new Date(person.birthday.toString().replace(/\-/g, '/')).toUTCString());
+			assertEquals("Mon Jun 21 06:45:35 1965 UTC", DateUtil.parseW3CDTF(person.brithday_and_time.toString()).toUTCString());
+			trace(errors>0?"Failed with "+errors+" errors":"No errors");
+			
+			testDate = new Date(person.birthday.toString().replace(/\-/g, '/'));
+			
+		}
+					
+		
+		private function assertTrue(condition:Boolean, message:String=""):void {
+			if (!condition) errorTrace("expected true but was false"+message)
+		}
+		private function assertEquals(expected:Object, actual:Object, message:String=""):void {
+			if (expected !== actual) errorTrace("expected:<" + expected + "> but was:<" + actual + ">" + message);
+		}
+		private function errorTrace(message:String):void {
+			trace(message);
+			errors++;
+		}
+					
+	]]>
+</mx:Script>	
+	<mx:DateField id="dateField" selectedDate="{testDate}" />
+	<mx:DateChooser id="dateChooser" selectedDate="{testDate}" />
+</mx:Application>

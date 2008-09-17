@@ -1,0 +1,26 @@
+This is the code used for chapter 02 - Passing Data with XML.
+
+Before starting the Rails application don't forget to create and migrate the database by doing the followoing:
+
+  rake db:create
+  rake db:migrate
+
+
+The Flex applications are the following
+
+ForPassingDataWithXML.mxml
+  This is a bar minium Flex application that simply declares a native XML instance variable.
+  
+ForPassingDataWithXML2.mxml
+  Test harness that asserts several aspect of ActionScript XML and e4x.
+  Note run the application in debug mode to see the assertion results.
+  
+HttpServiceToRead.mxml 
+  Performs a simple restful call using HTTPService.
+  
+HttpServiceToUpdate.mxml
+  Performs an update restful call using HTTPService.
+  
+MappingXMLTypes.mxml
+  Test harness for XML type mapping.
+  

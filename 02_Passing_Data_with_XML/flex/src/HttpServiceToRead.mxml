@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+	applicationComplete="index.send()">
+<mx:HTTPService id="index" url="http://localhost:3000/people.xml" resultFormat="e4x" />
+<mx:DataGrid dataProvider="{index.lastResult.person}" width="100%" height="100%" >
+		<mx:columns>
+			<mx:DataGridColumn headerText="First Name" dataField="first-name"/>
+			<mx:DataGridColumn headerText="Last Name" dataField="last-name"/>
+		</mx:columns>	
+</mx:DataGrid>
+</mx:Application>

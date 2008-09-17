@@ -1,0 +1,24 @@
+<h1>Editing person</h1>
+
+<% form_for(@person) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :first_name %><br />
+    <%= f.text_field :first_name %>
+  </p>
+  <p>
+    <%= f.label :last_name %><br />
+    <%= f.text_field :last_name %>
+  </p>
+  <p>
+    <%= f.label :address %><br />
+    <%= f.text_area :address %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @person %> |
+<%= link_to 'Back', people_path %>
