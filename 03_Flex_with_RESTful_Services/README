@@ -1,0 +1,10 @@
+This is the code used for chapter 03 - Flex with RESTful Services.
+
+Before starting the Rails application don't forget to create and migrate the database by doing the followoing:
+
+  rake db:create
+  rake db:migrate
+
+The Rails application exposes three resources: an account has many positions which in turn has many movements.
+
+The Flex applications has one file: main.xml provide a rudimentary user interface to access the three resources.

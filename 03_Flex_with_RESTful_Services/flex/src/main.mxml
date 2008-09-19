@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
+	applicationComplete="setup()">
+<mx:Script>
+	<![CDATA[
+		import mx.binding.utils.BindingUtils;
+		
+		[Bindable] private var accounts:XML;
+		[Bindable] private var positions:XML;
+		[Bindable] private var movements:XML;
+		
+		private function setup():void {
+			accountsIndex.send();
+		}
+		private function addNewAccount():void {
+			accounts.appendChild(<account><id></id><name>new name</name></account>);
+		}
+		
+		private function addNewPosition():void {
+			positions.appendChild(<position><id/><name>enter ticker</name></position>);
+		}
+		private function buyPosition():void {
+			if (positionsGrid.selectedItem.id=='') { 
+				var newStock:XML = (positionsGrid.selectedItem as XML).copy();
+				newStock.appendChild(<ticker>{positionsGrid.selectedItem.name.toString()}</ticker>)
+				positionsBuy.send(newStock)
+			} else {
+				positionsCreate.send(positionsGrid.selectedItem)
+			}				
+		}
+		private function sellPosition():void {
+			var position:XML = <position>
+								<id>{positionsGrid.selectedItem.id.toString()}</id>
+								<ticker>{positionsGrid.selectedItem.ticker.toString()}</ticker>
+								<quantity>{positionsGrid.selectedItem.quantity.toString()}</quantity>
+							  </position>
+			positionsDelete.send(position);							  
+		}
+				
+	]]>
+</mx:Script>	
+
+<!-- ACCOUNTS -->
+<mx:HTTPService id="accountsIndex" url="http://localhost:3000/accounts" 
+		resultFormat="e4x" 
+		result="accounts=event.result as XML"/>
+<mx:HTTPService id="accountsCreate"	url="http://localhost:3000/accounts"
+		method="POST" resultFormat="e4x" contentType="application/xml"
+		result="accountsIndex.send()"  />
+<mx:HTTPService id="accountsUpdate"	url="http://localhost:3000/accounts/{accountsGrid.selectedItem.id}?_method=put"
+  		method="POST" resultFormat="e4x"	contentType="application/xml"  />
+<mx:HTTPService id="accountsDelete"	url="http://localhost:3000/accounts/{accountsGrid.selectedItem.id}"
+		method="POST" resultFormat="e4x" contentType="application/xml"
+		result="accountsIndex.send()"   >
+	<mx:request>
+		<_method>delete</_method>
+	</mx:request>	
+</mx:HTTPService>
+
+<!-- POSITIONS -->
+<mx:String id="positionsPrefix">accounts/{accountsGrid.selectedItem.id}</mx:String>
+
+<mx:HTTPService id="positionsIndex" 
+		url="http://localhost:3000/{positionsPrefix}/positions" 
+		resultFormat="e4x" 
+		result="positions=event.result as XML"/>
+<mx:HTTPService id="positionsCreate"	
+		url="http://localhost:3000/{positionsPrefix}/positions"
+		method="POST" resultFormat="e4x" contentType="application/xml"
+		result="positionsIndex.send()"  />
+<mx:HTTPService id="positionsBuy"	
+		url="http://localhost:3000/{positionsPrefix}/positions/buy"
+		method="POST" resultFormat="e4x" contentType="application/xml"
+		result="positionsIndex.send()"  />
+<mx:HTTPService id="positionsUpdate"	
+		url="http://localhost:3000/{positionsPrefix}/positions/{positionsGrid.selectedItem.id}?_method=put"
+  	method="POST" resultFormat="e4x"	contentType="application/xml"  />
+<mx:HTTPService id="positionsDelete"	
+		url="http://localhost:3000/{positionsPrefix}/positions/{positionsGrid.selectedItem.id}?_method=delete"
+		method="POST" resultFormat="e4x" contentType="application/xml"
+		result="positionsIndex.send()">
+</mx:HTTPService>
+
+<!-- MOVEMENTS -->
+
+
+<mx:HTTPService id="movementsIndex" 
+		url="http://localhost:3000/accounts/{accountsGrid.selectedItem.id}/positions/{positionsGrid.selectedItem.id}/movements" 
+		resultFormat="e4x"
+		result="movements=event.result as XML"/>
+
+<!-- UI -->
+
+	<mx:HDividedBox width="100%" height="100%">
+	<mx:Panel title="Accounts"  width="100%" height="100%">		
+		<mx:DataGrid  id="accountsGrid" width="100%" height="100%" 			
+				dataProvider="{accounts.account}"
+				change="positions=movements=null; if (event.target.selectedItem.id!='') positionsIndex.send()"
+				editable="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Id" dataField="id" editable="false"/>
+				<mx:DataGridColumn headerText="Name" dataField="name" />
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:ControlBar>
+			<mx:Button label="New" 
+				click="addNewAccount()" 
+				enabled="{accountsGrid.dataProvider!=null}" />
+			<mx:Button label="{XML(accountsGrid.selectedItem).id==''?'Create':'Update'}" 
+				click="XML(accountsGrid.selectedItem).id=='' ? 
+							accountsCreate.send(accountsGrid.selectedItem) :
+						    accountsUpdate.send(accountsGrid.selectedItem)" />
+			<mx:Button label="Delete"
+				click="XML(accountsGrid.selectedItem).id=='' ? accountsIndex.send() : accountsDelete.send()"	 
+				enabled="{accountsGrid.selectedItem!=null}" />			
+		</mx:ControlBar>
+	</mx:Panel>	
+	
+	<mx:Panel title="Positions" width="100%" height="100%">		
+		<mx:DataGrid id="positionsGrid" width="100%" height="100%"
+					 dataProvider="{positions.position}"
+					 change="movements=null; if (accountsGrid.selectedItem.id!='' &amp;&amp; positionsGrid.selectedItem.id!='') movementsIndex.send()"					 
+					 editable="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Name" dataField="name" editable="{XML(positionsGrid.selectedItem).id==''}"/>
+				<mx:DataGridColumn headerText="Quantity" dataField="quantity"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:ControlBar>
+			<mx:Button label="New" 
+				click="addNewPosition()" 
+				enabled="{positionsGrid.dataProvider!=null}" />
+			<mx:Button label="{XML(positionsGrid.selectedItem).id==''?'Buy New':'Buy'}" 
+				click="buyPosition()" />
+			<mx:Button label="Sell" 
+				click="sellPosition()"
+				enabled="{XML(positionsGrid.selectedItem).id!=''}" />
+		</mx:ControlBar>
+	</mx:Panel>	
+	
+	<mx:Panel title="Movements" width="100%" height="100%">		
+		<mx:DataGrid id="movementsGrid" width="100%" height="100%"
+					 dataProvider="{movements.movement}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Operation" dataField="operation"/>
+				<mx:DataGridColumn headerText="Quantity" dataField="quantity"/>
+				<mx:DataGridColumn headerText="Price" dataField="price"/>
+			</mx:columns>
+		</mx:DataGrid>		
+	</mx:Panel>	
+	</mx:HDividedBox>
+
+	
+</mx:Application>

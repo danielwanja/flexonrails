@@ -1,0 +1,28 @@
+<p>
+  <b>Price:</b>
+  <%=h @movement.price %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%=h @movement.date %>
+</p>
+
+<p>
+  <b>Quantity:</b>
+  <%=h @movement.quantity %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%=h @movement.position_id %>
+</p>
+
+<p>
+  <b>Operation:</b>
+  <%=h @movement.operation %>
+</p>
+
+
+<%= link_to 'Edit', edit_movement_path(@movement) %> |
+<%= link_to 'Back', movements_path %>

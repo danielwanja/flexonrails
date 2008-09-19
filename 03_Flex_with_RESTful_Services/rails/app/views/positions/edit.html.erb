@@ -1,0 +1,28 @@
+<h1>Editing position</h1>
+
+<% form_for(@position) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :account_id %><br />
+    <%= f.text_field :account_id %>
+  </p>
+  <p>
+    <%= f.label :quantity %><br />
+    <%= f.text_field :quantity %>
+  </p>
+  <p>
+    <%= f.label :ticker %><br />
+    <%= f.text_field :ticker %>
+  </p>
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @position %> |
+<%= link_to 'Back', positions_path %>
