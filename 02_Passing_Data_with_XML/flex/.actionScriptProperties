@@ -9,6 +9,7 @@
 <sourceAttachmentPath/>
 </compiler>
 <applications>
+<application path="HttpServiceToUpdateWithErroHandling.mxml"/>
 <application path="ForPassingDataWithXML2.mxml"/>
 <application path="MappingXMLTypes.mxml"/>
 <application path="HttpServiceToUpdate.mxml"/>

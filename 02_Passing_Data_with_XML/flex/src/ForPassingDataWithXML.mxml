@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
-	 applicationComplete="main()">
+   applicationComplete="main()">
 <mx:Script>
-	<![CDATA[
-	private var list:XML = <people>
-						<person><first_name>tony</first_name><last_name>hillerson</last_name><address>denver</address></person>
-						<person><first_name>daniel</first_name><last_name>wanja</last_name><address>denver</address></person>
-				   </people>;
-	private function main():void {
-		trace(list);
-	}
-	]]>
-</mx:Script>	
+  <![CDATA[
+  private var list:XML = 
+      <people>
+        <person>
+            <first_name>tony</first_name>
+            <last_name>hillerson</last_name>
+            <address>denver</address>
+         </person>
+        <person>
+            <first_name>daniel</first_name>
+            <last_name>wanja</last_name>
+            <address>denver</address>
+          </person>
+      </people>;
+  private function main():void {
+    trace(list);
+  }
+  ]]>
+</mx:Script>  
 </mx:Application>

@@ -9,6 +9,14 @@
       person['last-name'] = lastNameField.text;
       update.send(person);
     }
+    private function handleResult(result:XML):void {
+        if (result && result.name()=="errors") {
+            mx.controls.Alert.show(result.toXMLString());
+        } else {
+            index.send();
+        }
+    }
+    
   ]]>
 </mx:Script>  
 <mx:HTTPService id="index" 
@@ -19,7 +27,7 @@
   resultFormat="e4x"
   method="POST"
   fault="mx.controls.Alert.show(event.toString())"
-  result="index.send()" />
+  result="handleResult(event.result as XML)" />
 <mx:DataGrid id="grid" 
   dataProvider="{index.lastResult.person}" width="100%" height="50%" >
     <mx:columns>

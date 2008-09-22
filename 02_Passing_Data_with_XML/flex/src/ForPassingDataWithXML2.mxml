@@ -1,59 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" applicationComplete="main()">
 <mx:Script>
-	<![CDATA[
-	
-	private var list:XML = <people>
-						<person><first_name>tony</first_name><last_name>hillerson</last_name><address>denver</address></person>
-						<person><first_name>daniel</first_name><last_name>wanja</last_name><address>denver</address></person>
-				   </people>;
-	private var errors:Number = 0;				   
+  <![CDATA[
+  
+  private var list:XML = <people>
+            <person><first_name>tony</first_name><last_name>hillerson</last_name><address>denver</address></person>
+            <person><first_name>daniel</first_name><last_name>wanja</last_name><address>denver</address></person>
+           </people>;
+  private var errors:Number = 0;           
 
 private function main():void {
-	test1();
-	test2();
+  test1();
+  test2();
 }
 
 private function test1():void {
-	assertTrue(list.person is XMLList);
-	assertEquals(2, list.person.length());
-	assertTrue(list.person[1] is XML);
-	assertEquals("daniel", list.person[1].first_name);
-	assertTrue(list.person[1].first_name is XMLList);
-	assertEquals("daniel", list.person[1].first_name.toString());
-	assertEquals("<first_name>daniel</first_name>", list.person[1].first_name.toXMLString());
-	assertEquals("tony", list.person.(last_name=='hillerson').first_name)
-	assertEquals("tony", list.person.(last_name=='hillerson')[0].first_name)
-	assertEquals(2, list.person.(last_name=='hillerson' || last_name=='wanja').length())
-	assertEquals(1, list.person.(last_name=='hillerson' && first_name=='tony').length())
-	assertEquals("tony", list..first_name[0]);
-	trace(errors>0?"Failed with "+errors+" errors":"No errors");
+  assertTrue(list.person is XMLList);
+  assertEquals(2, list.person.length());
+  assertTrue(list.person[1] is XML);
+  assertEquals("daniel", list.person[1].first_name);
+  assertTrue(list.person[1].first_name is XMLList);
+  assertEquals("daniel", list.person[1].first_name.toString());
+  assertEquals("<first_name>daniel</first_name>", list.person[1].first_name.toXMLString());
+  assertEquals("tony", list.person.(last_name=='hillerson').first_name)
+  assertEquals("tony", list.person.(last_name=='hillerson')[0].first_name)
+  assertEquals(2, list.person.(last_name=='hillerson' || last_name=='wanja').length())
+  assertEquals(1, list.person.(last_name=='hillerson' && first_name=='tony').length())
+  assertEquals("tony", list..first_name[0]);
+  trace(errors>0?"Failed with "+errors+" errors":"No errors");
 }
 
 private function test2():void {
-	var list:XML = <root>
-						<item>one</item>
-						<item>two</item>
-						<parent>
-							<item>tree</item>
-						</parent>	
-				   </root>
-	assertEquals(2, list.item.length());
-	assertEquals(3, list..item.length());
+  var list:XML = <root>
+            <item>one</item>
+            <item>two</item>
+            <parent>
+              <item>tree</item>
+            </parent>  
+           </root>
+  assertEquals(2, list.item.length());
+  assertEquals(3, list..item.length());
 }
 
 private function assertTrue(condition:Boolean, message:String=""):void {
-	if (!condition) errorTrace("expected true but was false"+message)
+  if (!condition) errorTrace("expected true but was false"+message)
 }
-private function assertEquals(expected:Object, actual:Object, message:String=""):void {
-	if (expected != actual) errorTrace("expected:<" + expected + "> but was:<" + actual + ">" + message);
+private function assertEquals(expected:Object, actual:Object,
+                              message:String=""):void {
+  if (expected != actual) 
+    errorTrace("expected:<" + expected + "> " +
+               "but was:<" + actual + ">" + message);
 }
 private function errorTrace(message:String):void {
-	trace(message);
-	errors++;
+  trace(message);
+  errors++;
 }
-	]]>
+  ]]>
 </mx:Script>
 
-	
+  
 </mx:Application>
