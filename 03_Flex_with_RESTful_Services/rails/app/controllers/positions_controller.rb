@@ -8,7 +8,8 @@ class PositionsController < ApplicationController
   def create
     @position = @account.positions.find(params[:position][:id])
     if @position.buy(params[:position][:quantity].to_i)
-      render :xml => @position, :status => :created, :location => [@account, @position]
+      render :xml => @position, :status => :created, 
+             :location => [@account, @position]
     else
       render :xml => @position.errors, :status => :unprocessable_entity
     end
@@ -17,15 +18,16 @@ class PositionsController < ApplicationController
   def destroy
     @position = @account.positions.find(params[:position][:id])
     if @position.sell(params[:position][:quantity].to_i)
-      render :xml => @position, :status => :created, :location => [@account, @position]
+      render :xml => @position, :status => :created, 
+             :location => [@account, @position]
     else
       render :xml => @position.errors, :status => :unprocessable_entity
     end
   end
 
    def buy    
-    @position = @account.buy(params[:position][:ticker], params[:position][:quantity].to_i)  
-RAILS_DEFAULT_LOGGER.debug "DEBUG:#{@position.errors.inspect}"
+    @position = @account.buy(params[:position][:ticker],
+                             params[:position][:quantity].to_i)  
     if @position.errors.empty?
       head :ok
     else

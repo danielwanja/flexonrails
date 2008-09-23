@@ -3,19 +3,22 @@ class Position < ActiveRecord::Base
   has_many :movements, :dependent => :destroy
 
   validates_uniqueness_of :ticker, :scope => :account_id
-  validates_presence_of :name, :message => "Stock not found on Yahoo Finance."
+  validates_presence_of :name, 
+                        :message => "Stock not found on Yahoo Finance."
   before_validation_on_create :update_stock_information
 
   def buy(quantity) 
     self.quantity ||= 0
     self.quantity = self.quantity + quantity;
-    movements.build(:quantity => quantity, :price => quote.lastTrade, :operation => 'buy') 
+    movements.build(:quantity => quantity, :price => quote.lastTrade,
+                    :operation => 'buy')
     save
   end
 
   def sell(quantity)
     self.quantity = self.quantity - quantity
-    movements.build(:quantity => quantity, :price => quote.lastTrade, :operation => 'sell')
+    movements.build(:quantity => quantity, :price => quote.lastTrade,
+                    :operation => 'sell')
     save
   end
 
