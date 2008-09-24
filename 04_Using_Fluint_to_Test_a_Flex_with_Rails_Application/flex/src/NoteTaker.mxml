@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:control="flexonrails.examples.notetaker.control.*" 
+	xmlns:business="flexonrails.examples.notetaker.business.*"
+	xmlns:view="flexonrails.examples.notetaker.view.*"
+	applicationComplete="setup()"
+ >
+	<mx:Script>
+		<![CDATA[
+	 
+			import flexonrails.examples.notetaker.model.NotetakerModelLocator;
+			import flexonrails.examples.notetaker.event.RetrieveNotesEvent;
+			
+			[Bindable]
+			private var model : NotetakerModelLocator = NotetakerModelLocator.getInstance();
+			
+			private function setup():void {
+				new RetrieveNotesEvent().dispatch();
+			}
+		]]>
+	</mx:Script>
+
+		<control:NotetakerController id="controller" />	
+		<business:Services id="services" />		
+
+	<mx:ViewStack width="100%" height="100%" selectedIndex="{model.currentView}">
+		<view:ListView height="100%" />
+		<view:EditView height="100%"  />		
+	</mx:ViewStack>
+</mx:Application>

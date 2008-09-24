@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:Script>
+  <![CDATA[   
+    import flexonrails.examples.notetaker.model.NotetakerModelLocator;
+    import flexonrails.examples.notetaker.event.NewNoteEvent;
+    import flexonrails.examples.notetaker.event.EditNoteEvent;
+    
+    [Bindable]
+    private var model:NotetakerModelLocator = 
+                            NotetakerModelLocator.getInstance();
+  ]]>
+</mx:Script>
+  <mx:Label id="header" 
+    text="Notes ({model.notes.note.length()})"  
+    horizontalCenter="0" />
+  <mx:Button id="addBtn" right="4" y="12" label="Add" 
+           click="new NewNoteEvent().dispatch();"/>
+  <mx:List id="list" labelField="title"
+           dataProvider="{model.notes.note}" 
+           click="new EditNoteEvent(list.selectedItem).dispatch();" 
+           left="4" right="4" bottom="0"  top="39" /> 
+</mx:Canvas>

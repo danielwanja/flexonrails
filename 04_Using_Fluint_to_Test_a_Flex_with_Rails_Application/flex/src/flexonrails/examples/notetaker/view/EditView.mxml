@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:Script>
+  <![CDATA[
+  import flexonrails.examples.notetaker.model.NotetakerModelLocator;
+  import flexonrails.examples.notetaker.event.BackToListEvent;
+  import flexonrails.examples.notetaker.event.SaveChangeEvent;
+  import flexonrails.examples.notetaker.event.DeleteNoteEvent;
+  
+  [Bindable]
+  private var model:NotetakerModelLocator = 
+                            NotetakerModelLocator.getInstance();
+  
+  private function save():void {      
+    new SaveChangeEvent(noteBodyField.text, model.selectedNote).dispatch();
+  }
+  ]]>
+</mx:Script>
+  <mx:Label id="header" text="{model.selectedNote.title}"  
+           horizontalCenter="0" />
+  <mx:Button left="4" y="12" label="&lt;Cancel" 
+          click="new BackToListEvent().dispatch();"/>  
+  <mx:Button right="4" y="12" label="Save" 
+          click="save()" />
+  <mx:Canvas width="100%" height="100%" >
+       <mx:TextArea id="noteBodyField" 
+            left="4" right="4" bottom="0" top="39" 
+            text="{model.selectedNote.body}"/>
+       <mx:ControlBar bottom="0">
+         <mx:Button label="Delete"  
+           enabled="{model.selectedNote.id.toString() != ''}"
+           click="new DeleteNoteEvent(model.selectedNote.id).dispatch()"/>
+       </mx:ControlBar>
+  </mx:Canvas>
+</mx:Canvas>

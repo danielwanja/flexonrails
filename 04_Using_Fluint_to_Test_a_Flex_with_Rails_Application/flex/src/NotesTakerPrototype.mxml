@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" width="360">
+    <mx:states>
+        <mx:State name="editMode">
+            <mx:AddChild relativeTo="{header}" position="before">
+                <mx:Button label="&lt;Cancel" click="list()"/>
+            </mx:AddChild>
+            <mx:SetProperty target="{viewstack1}" name="selectedIndex" value="1"/>
+            <mx:SetProperty target="{header}" name="text" value="{grid.selectedItem.title}"/>
+            <mx:SetProperty target="{button1}" name="label" value="Save"/>
+            <mx:SetEventHandler target="{button1}" name="click" handler="done()"/>
+        </mx:State>
+    </mx:states>
+<mx:Script>
+	<![CDATA[
+		[Bindable]
+		public var notes:Array = 
+			[{title:"Food Diary", changed:"7:38 am", note:"Food Diary\n\nMonday: vegetables\nTuesday: salad\nWednesday: soup\nThursday: pasta\nFriday: burger and fries\n\n\n"},
+			 {title:"Mileage 33966-33978", changed:"Jul 18"},
+			 {title:"Meeting minutes", changed:"Jan 21"}]
+			
+	    public static const LIST_VIEW_MODE:String = "";
+	    public static const EDIT_VIEW_MODE:String = "editMode"; 
+	    
+	   public function add():void {
+	   	 currentState = EDIT_VIEW_MODE;
+	   }
+	   public function list():void {
+	   	currentState = LIST_VIEW_MODE;
+	   }
+	   public function done():void {
+	   	currentState = LIST_VIEW_MODE;
+	   }
+	]]>
+</mx:Script>
+   <mx:HBox width="100%" paddingRight="30">
+   		<mx:Label  id="header" text="Notes ({notes.length})" width="100%" textAlign="center" fontWeight="bold"/>
+   		<mx:Button id="button1" label="Add" click="add()" />
+   </mx:HBox>
+	<mx:ViewStack id="viewstack1" width="100%" height="100%" paddingLeft="15" paddingRight="30" >
+	   <mx:VBox width="100%" height="100%">
+			<mx:DataGrid id="grid" dataProvider="{notes}" width="100%" height="100%"  headerHeight="0">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Column 1" dataField="title"/>
+				</mx:columns>
+			</mx:DataGrid>			   	
+	   </mx:VBox>
+	   <mx:VBox width="100%" height="100%">
+	   	  <mx:TextArea text="{grid.selectedItem.note}" width="100%" height="100%" />
+	   	  <mx:ControlBar horizontalAlign="center" width="100%">
+	   	  	<mx:Button label="Delete" styleName="btn"  click="list()"/>
+	   	  </mx:ControlBar>
+	   </mx:VBox>	   
+	</mx:ViewStack>
+</mx:Application>

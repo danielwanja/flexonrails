@@ -1,0 +1,87 @@
+package tests
+{
+	import mx.effects.Sequence;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.events.FaultEvent;
+	
+	import net.digitalprimates.fluint.sequence.SequenceWaiter;
+	import net.digitalprimates.fluint.tests.TestCase;
+	import tests.utils.TestHelper;
+	
+	public class TestNotesResource extends TestCase
+	{
+		private var notesResource:NotesResource;
+	    
+	    override protected function setUp():void {
+           notesResource = new NotesResource();   
+           TestHelper.resetFixtures(this, ['notes']);
+        }  	
+		public function testList():void {
+			notesResource.notes.addEventListener(ResultEvent.RESULT, asyncHandler( assertTestList, 1000 ));
+			notesResource.notes.send();
+		}
+		public function assertTestList(result:ResultEvent, token:Object = null):void {
+			assertTrue(result is ResultEvent);
+			assertEquals(2, result.result.note.length());
+			assertEquals("MyString", result.result.note[0].title);
+		}				
+						
+		public function testCreate():void{			
+			notesResource.noteCreate.addEventListener(ResultEvent.RESULT, asyncHandler( assertTestCreate, 1000 ));
+	 	    var newNote:XML =  <note>
+							    <title>My First Note</title>
+							    <body>Is this a hello world? Not even funny.</body>
+							  </note>					
+			notesResource.noteCreate.send(newNote);
+		}
+		public function assertTestCreate(result:ResultEvent, token:Object = null):void {
+			assertEquals("My First Note", result.result.title);
+		}
+		
+		public function testUpdate():void{
+	 	    var note:XML =  <note>
+							    <body>Testing Updates</body>
+							  </note>	
+	 	    notesResource.id = 1;  
+			notesResource.noteUpdate.addEventListener(ResultEvent.RESULT, asyncHandler( assertTestUpdateSuccess, 1000, {noteId:notesResource.id} ));
+			notesResource.noteShow.addEventListener(ResultEvent.RESULT, asyncHandler( assertTestUpdateData, 1000 ));
+			notesResource.noteUpdate.send(note);
+		}
+		public function assertTestUpdateSuccess(result:ResultEvent, token:Object = null):void {
+			notesResource.id = token.noteId;
+			notesResource.noteShow.send();
+		}
+		public function assertTestUpdateData(result:Object, token:Object = null):void {
+			assertTrue(result is ResultEvent);
+			assertEquals("Testing Updates", result.result.body);
+		}
+				
+		public function testDelete():void{
+	 	    notesResource.id = 1;							  		
+			notesResource.noteDelete.addEventListener(ResultEvent.RESULT, asyncHandler( assertTestDelete,  1000 ));	 	    		
+			notesResource.noteDelete.send();
+		}
+		public function assertTestDelete(result:Object, token:Object = null):void {
+			assertTrue(result is ResultEvent);
+		}
+		
+/*				
+		public function testValidation():void{
+	 	    var asyncCall:Function = addAsync(assertTestValidation, 1000);
+	 	    var newNote:XML =  <note>
+							  </note>					
+			var call:AsyncToken = notesResource.noteCreate.send(newNote);
+			call.addResponder(new ItemResponder(asyncCall, asyncCall));
+		}
+		public function assertTestValidation(result:Object, token:Object = null):void {
+			assertTrue(result is ResultEvent);
+			assertEquals("errors", result.result.name());
+			var errors:XML = result.result
+			assertEquals(2, errors.error.length());
+			assertEquals("Body can't be blank", errors.error[0]);			
+			assertEquals("Title can't be blank", errors.error[1]);						
+		}		
+*/		
+	}
+}

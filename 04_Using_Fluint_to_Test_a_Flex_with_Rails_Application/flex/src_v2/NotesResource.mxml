@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventDispatcher xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="flash.events.*" >
+<mx:HTTPService id="notes"  url="http://localhost:3000/notes.xml" resultFormat="e4x" />	
+</EventDispatcher>

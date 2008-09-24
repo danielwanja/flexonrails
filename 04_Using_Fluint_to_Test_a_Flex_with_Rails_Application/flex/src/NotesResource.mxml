@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventDispatcher xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="flash.events.*" >
+<mx:Script>
+	<![CDATA[
+		[Bindable]
+		public var id:Number;
+	]]>
+</mx:Script>
+<mx:HTTPService id="notes" url="http://localhost:3000/notes.xml" resultFormat="e4x" />
+<mx:HTTPService id="noteCreate"
+	     		url="http://localhost:3000/notes.xml"
+		  		method="POST"
+				resultFormat="e4x"
+				contentType="application/xml" 
+		  		/>
+<mx:HTTPService id="noteShow"
+	     		url="http://localhost:3000/notes/{id}.xml"
+		  		method="GET"
+				resultFormat="e4x"
+		  		/>		  		
+<mx:HTTPService id="noteDelete"
+	     		url="http://localhost:3000/notes/{id}.xml"
+		  		method="POST"
+				resultFormat="e4x">
+	<mx:request xmlns="">
+		<_method>delete</_method>
+	</mx:request>
+</mx:HTTPService>		  		
+<mx:HTTPService id="noteUpdate"
+	     		url="http://localhost:3000/notes/{id}.xml?_method=put"
+		  		method="POST"
+				resultFormat="e4x"
+				contentType="application/xml"			  		
+		  		/>			  			
+</EventDispatcher>

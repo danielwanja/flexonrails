@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+				xmlns:fluint="http://www.digitalprimates.net/2008/fluint"
+				xmlns:control="flexonrails.examples.notetaker.control.*" 
+				xmlns:business="flexonrails.examples.notetaker.business.*"
+		            
+	            layout="absolute"
+                creationComplete="startTestProcess(event)"
+                width="100%" height="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import tests.NoteTakerTestSuite;
+			import net.digitalprimates.fluint.monitor.TestMonitor;
+			import mx.events.CollectionEvent;
+			import tests.utils.TestHelper;
+			
+			protected function startTestProcess( event:Event ):void {
+				testRunner.startTests( new NoteTakerTestSuite() );
+			}
+			protected function testsCompleted():void {
+					TestHelper.saveTestResults(TestMonitor.getInstance().xmlResults);
+			}
+		]]>
+	</mx:Script>
+	<fluint:TestResultDisplay width="100%" height="100%" />
+	<fluint:TestRunner id="testRunner"   testsComplete="testsCompleted()"/>
+	
+	<!-- Controls required to test the Cairngorm Application -->	
+	<control:NotetakerController id="controller" />
+	<business:Services id="services" />
+	
+</mx:Application>

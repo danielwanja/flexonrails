@@ -1,0 +1,54 @@
+package tests
+{
+	import flash.events.Event;
+	
+	import flexonrails.examples.notetaker.business.NoteDelegate;
+	
+	import mx.controls.TextInput;
+	import mx.rpc.IResponder;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
+	
+	import net.digitalprimates.fluint.async.TestResponder;
+	import net.digitalprimates.fluint.tests.TestCase;
+	import mx.events.FlexEvent;
+	import tests.utils.TestHelper;
+	public class TestNoteDelegate extends TestCase
+	{
+		private var delegate:NoteDelegate;
+		private var fixtures:HTTPService;
+		
+		override protected function setUp():void {
+//			TestHelper.resetFixtures(this, ['notes']);
+//			fixtures = new HTTPService();
+//			fixtures.url = "http://localhost:3000/fixtures/reset";
+//			fixtures.contentType="application/xml";
+//			fixtures.addEventListener(ResultEvent.RESULT,  asyncHandler( pendUntilComplete, 1000 ));
+//			fixtures.send(<fixtures><fixture>notes</fixture></fixtures>);
+		}
+		public function testList():void {
+  			var responder:IResponder = asyncResponder( new TestResponder( assertTestList, assertTestList ) , 1000 );
+            var delegate : NoteDelegate = new NoteDelegate( responder );
+            delegate.list();   
+		}
+		public function assertTestList(result:Event, token:Object = null):void {
+			assertTrue(result is ResultEvent);
+			assertEquals(2, (result as ResultEvent).result.note.length());
+			assertEquals("MyString", (result as ResultEvent).result.note[0].title);
+		}			
+		
+		public function testCreate():void{			
+  			var responder:IResponder = asyncResponder( new TestResponder( assertTestCreate, assertTestCreate ) , 1000 );
+            var delegate : NoteDelegate = new NoteDelegate( responder );
+			delegate.create(<note>
+							    <title>My First Note</title>
+							    <body>Is this a hello world? Not even funny.</body>
+							</note>);
+		}
+		public function assertTestCreate(result:ResultEvent, token:Object = null):void {
+			assertEquals("My First Note", result.result.title);
+		}
+			
+		
+	}
+}

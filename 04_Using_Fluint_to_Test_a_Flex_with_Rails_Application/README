@@ -1,0 +1,24 @@
+This is the code used for chapter 04 - Using Fluint to Test a Flex with Rails Application.
+
+The Rails application can be found in the /rails folder. Before starting the Rails application don't forget to create and migrate the database by doing the followoing:
+
+  rake db:create
+  rake db:migrate
+
+The Flex main Flex application is NoteTaker.mxml a Cairngorm based application. All the source can be found in the /flex/src folder. You will see the classical Cairngorm structure under the flexonrails/examples/notetaker folder
+  business
+  command
+  control
+  event
+  model
+  view
+
+Each of these folders contains the different Flex ActionScript classes and views used in the chapter.
+
+Additionally you will find the test harness in TestRunnerFlex.mxml. Before running this harness start the server in test mode: ./script/server -e test
+
+Note the test harness evolves during the chapter and older version can be found in the flex/src_versions folder. The actual test suite and test cases are found under the flex/src/tests folder.
+
+Note that for the NoteTaker application I create a NotesResource.mxml class that evolves through out the chapter. The final version is NotesResource.mxml and prior version can also be found in the flex/src_versions folder.
+
+To be able to run the different versions while I copyedited the book I also created the src_v1 and src_v2 folder. 
