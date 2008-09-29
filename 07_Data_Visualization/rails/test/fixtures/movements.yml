@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  price: 1.5
+  date: 2008-09-18 07:21:43
+  quantity: 1
+  position_id: 1
+  operation: MyString
+
+two:
+  price: 1.5
+  date: 2008-09-18 07:21:43
+  quantity: 1
+  position_id: 1
+  operation: MyString

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+<mx:Script>
+  <![CDATA[
+  import mx.rpc.AsyncResponder;
+  import mx.collections.XMLListCollection;
+  import mx.rpc.AsyncToken;
+  import mx.olap.*;
+  import mx.events.CubeEvent;
+  import mx.controls.OLAPDataGrid;
+  
+  [Bindable]
+  public var positions:XMLList;
+  
+  [Bindable]
+  private var cubeResult:IOLAPResult;
+    
+    private function set reloadCube(positions:XMLList):void {
+      if (positions==null) return;
+    cube.dataProvider = positions.length() ? new XMLListCollection(positions) : null;
+    cube.addEventListener(CubeEvent.CUBE_COMPLETE, runQuery);
+    cube.refresh();  // Malaxes the data based on the schema  
+    }
+          
+  private var showIndustry:Boolean = false;
+  private var pivoted:Boolean = true;
+  private function pivot():void {
+    pivoted = !pivoted
+    runQuery();    
+  }
+  private function includeIndustry(show:Boolean):void {
+    showIndustry = show;
+    runQuery();
+  }
+  private function runQuery(event:CubeEvent=null):void
+  {
+    var token:AsyncToken = cube.execute(getQuery(pivoted, showIndustry));
+    token.addResponder(
+        new AsyncResponder(displayResult, olapFaultHandler));
+  }
+  private function getQuery(pivot:Boolean=false, 
+                            showIndustry:Boolean=false):IOLAPQuery {
+    var query:OLAPQuery = new OLAPQuery;    
+    var firstAxis:IOLAPQueryAxis = 
+          query.getAxis(pivot ? OLAPQuery.ROW_AXIS : OLAPQuery.COLUMN_AXIS);
+    var sectorSet:IOLAPSet = new OLAPSet();
+    sectorSet.addElements(
+      cube.findDimension("SectorIndustry").findAttribute("Sector").members);    
+    if (showIndustry) {
+      var industrySet:IOLAPSet = new OLAPSet();
+      industrySet.addElements(
+        cube.findDimension("SectorIndustry")
+                .findAttribute("Industry").members);
+      firstAxis.addSet(
+            sectorSet.hierarchize(true)
+                .crossJoin(industrySet).hierarchize(true));
+    } else {
+      firstAxis.addSet(sectorSet.hierarchize(true));
+    }  
+    var secondAxis:IOLAPQueryAxis = 
+          query.getAxis(pivot ? OLAPQuery.COLUMN_AXIS : OLAPQuery.ROW_AXIS);  
+    var accountSet:IOLAPSet = new OLAPSet();
+    accountSet.addElements(
+          cube.findDimension("Account").findAttribute("Account").members);
+    secondAxis.addSet(accountSet.hierarchize(true));  
+    return query;
+  }
+  
+  
+  
+  private function displayResult(result:Object, token:Object=null):void
+  {
+    trace("OLAP query complete.");
+    olapGrid.dataProvider = result as IOLAPResult;
+    cubeResult = result as IOLAPResult;;
+  }
+  
+  private function olapFaultHandler(msg:Object):void
+  {
+    mx.controls.Alert.show(msg as String);
+  }
+  
+  private function gridSelectionChanged():void {
+    return;
+    if (!(olapGrid.selectedItem is OLAPAxisPosition)) return;
+    var position:OLAPAxisPosition = olapGrid.selectedItem as OLAPAxisPosition;
+    trace("selected:"+position.members);
+    var members:Array = position.members.toArray();
+    trace("selected members:"+members);
+    var rowIndex:Number = olapGrid.selectedIndex;
+    var axis:IOLAPQueryAxis = cubeResult.query.getAxis(OLAPQuery.COLUMN_AXIS);
+    var columnLength:Number = cubeResult.getAxis(OLAPQuery.COLUMN_AXIS).positions.length;
+  }  
+  ]]>
+</mx:Script>
+<mx:Binding source="positions" destination="reloadCube" />
+<mx:OLAPCube id="cube">
+  <!-- Dimension  Account -->
+   <mx:OLAPDimension name="Account" >
+   <mx:OLAPAttribute dataField="account_name" name="Account"/>
+     <mx:OLAPHierarchy name="AccountHierarchy"> 
+       <mx:OLAPLevel attributeName="Account" />
+     </mx:OLAPHierarchy>
+   </mx:OLAPDimension>
+
+  
+  <!-- Dimension Sector -->  
+  <mx:OLAPDimension name="SectorIndustry" >
+     <mx:OLAPAttribute dataField="sector" name="Sector"/>
+     <mx:OLAPAttribute dataField="industry" name="Industry"/>
+     <mx:OLAPHierarchy name="SectorIndustryHierarchy">
+       <mx:OLAPLevel  attributeName="Sector" />
+       <mx:OLAPLevel  attributeName="Industry" />
+    </mx:OLAPHierarchy>
+   </mx:OLAPDimension>
+
+  <!--  Facts or Measures -->
+  <mx:OLAPMeasure name="Estimated" dataField="estimated_total" aggregator="SUM" />
+</mx:OLAPCube>
+<mx:HBox>
+  <mx:Button label="Pivot" click="pivot()" />
+  <mx:CheckBox label="Show Industry" click="includeIndustry(event.currentTarget.selected)"/>  
+</mx:HBox>
+<mx:OLAPDataGrid id="olapGrid" 
+   width="100%" height="100%"    
+  change="gridSelectionChanged()">
+  <mx:headerRendererProviders>
+    <!-- FIXME: check if required -->
+    <mx:OLAPDataGridHeaderRendererProvider  headerWordWrap="true" uniqueName="[Author].[Name].[(All)]" styleName="headerStyles" type="{OLAPDataGrid.OLAP_MEMBER}"/>
+    <mx:OLAPDataGridHeaderRendererProvider  headerWordWrap="true" uniqueName="[Time].[Year].[(All)]" styleName="headerStyles" type="{OLAPDataGrid.OLAP_MEMBER}"/>
+    <mx:OLAPDataGridHeaderRendererProvider  headerWordWrap="true" uniqueName="[Time].[Quarter].[(All)]" styleName="headerStyles" type="{OLAPDataGrid.OLAP_MEMBER}"/>
+  </mx:headerRendererProviders>
+  <mx:itemRendererProviders>
+    <mx:OLAPDataGridItemRendererProvider  uniqueName="[Author].[Name].[(All)]" styleName="totalStyles" type="{OLAPDataGrid.OLAP_MEMBER}"/>
+    <mx:OLAPDataGridItemRendererProvider uniqueName="[Time].[Quarter].[(All)]" 
+          styleName="subtotalStyles" type="{OLAPDataGrid.OLAP_MEMBER}"/>
+  </mx:itemRendererProviders>
+</mx:OLAPDataGrid>
+</mx:VBox>

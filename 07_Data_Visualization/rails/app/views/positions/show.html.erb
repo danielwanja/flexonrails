@@ -1,0 +1,23 @@
+<p>
+  <b>Account:</b>
+  <%=h @position.account_id %>
+</p>
+
+<p>
+  <b>Quantity:</b>
+  <%=h @position.quantity %>
+</p>
+
+<p>
+  <b>Ticker:</b>
+  <%=h @position.ticker %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @position.name %>
+</p>
+
+
+<%= link_to 'Edit', edit_position_path(@position) %> |
+<%= link_to 'Back', positions_path %>

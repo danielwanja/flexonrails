@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="15" height="21"   backgroundAlpha="1">
+	<mx:Image x="0" y="0" source="@Embed(source='../assets/down.png')"/>
+</mx:Canvas>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="530" height="72"
+	title="Buy Stock" showCloseButton="true" close="PopUpManager.removePopUp(this)">
+<mx:Metadata>
+	[Event(name="buyStock", type="events.BuyNewStockEvent")]
+</mx:Metadata>	
+<mx:Script>
+	<![CDATA[
+		import mx.managers.PopUpManager;
+		import events.BuyNewStockEvent;
+				
+		private function buy():void {
+			dispatchEvent(new BuyNewStockEvent(symbol.text, Number(quantity.text), BuyNewStockEvent.BUY));
+			PopUpManager.removePopUp(this);
+		}
+	]]>
+</mx:Script>
+<mx:HBox>
+	<mx:Label text="Stock" />	
+	<mx:TextInput id="symbol" />
+	<mx:Label text="Quantity" />
+	<mx:TextInput id="quantity" text="1" />
+	<mx:Button label="Buy" click="buy()" enabled="{symbol.text!=null&amp;&amp;!isNaN(Number(quantity.text))}" />
+</mx:HBox>
+</mx:TitleWindow>

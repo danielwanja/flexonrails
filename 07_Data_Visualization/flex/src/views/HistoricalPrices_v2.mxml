@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+<mx:Script>
+	<![CDATA[
+		import mx.charts.chartClasses.IAxis;
+		import mx.controls.VRule;
+		import mx.charts.chartClasses.Series;
+		import mx.charts.series.items.HLOCSeriesItem;
+		import mx.charts.chartClasses.CartesianCanvasValue;
+		import mx.controls.Label;
+		import mx.controls.Button;
+		import views.MovementUpArrow;
+		
+		[Bindable]
+		public var hiLoSerie:XMLList;
+		
+		[Bindable]
+		public var movements:XMLList;
+		
+		private function set reloadmovements(value:XMLList):void {
+			//FIXME: Add group By created_at as multiple movement may exist on same day
+			canvas.removeAllChildren();
+			for each (var movement:XML in movements) {
+		        //FIXME: could add quantity to indicator
+		        var operationIndicator:DisplayObject = movement.operation.toString() == "buy" ? new MovementUpArrow() : new MovementDownArrow();
+		        var date:String = movement.created_at.toString().substr(0, 10);
+		        var price:Number = Number(movement.price);
+		        canvas.addDataChild(operationIndicator, date, price);				
+			}
+		}
+		
+		private function debug():void {
+			canvas.removeAllChildren();
+	        var item:HLOCSeriesItem = hlSerie.items[30];
+	        var b:DisplayObject = new MovementUpArrow();
+	        var date:String = item.item.date.toString();
+	        var value:Number = item.closeNumber;
+	        canvas.addDataChild(b, date, value);
+	        
+	        item = hlSerie.items[100];
+	        b = new MovementDownArrow();
+	        date = item.item.date.toString();
+	        value = item.closeNumber;
+	        canvas.addDataChild(b, date, value);
+	        
+	        
+		}
+		
+	]]>
+</mx:Script>
+		<mx:Binding source="movements" destination="reloadmovements" />
+		<mx:HLOCChart id="hlocchart" height="100%" width="100%"
+            paddingRight="5" paddingLeft="5" 
+            showDataTips="true" dataProvider="{hiLoSerie}">
+            <mx:horizontalAxis>
+                <mx:CategoryAxis id="haxis" categoryField="date" title="Date"  />
+            </mx:horizontalAxis>
+
+            <mx:horizontalAxisRenderers>
+                <mx:AxisRenderer axis="{haxis}" canDropLabels="true"  />
+            </mx:horizontalAxisRenderers>
+
+	        <mx:verticalAxisRenderers>
+	            <mx:AxisRenderer placement="left" axis="{v1}" /> 
+	            <mx:AxisRenderer placement="right" axis="{v2}"/>
+	        </mx:verticalAxisRenderers>
+
+            <mx:series>
+            
+                <mx:HLOCSeries id="hlSerie" openField="open" highField="high" lowField="low" closeField="close" >
+					<mx:verticalAxis>
+	                   <mx:LinearAxis id="v1"  baseAtZero="false" title="Price" />
+	                </mx:verticalAxis>                                  	
+                </mx:HLOCSeries>
+				<mx:ColumnSeries id="dateSerie" xField="date" yField="volume"
+					fill="{serieColor}"
+					stroke="{null}">
+					 <mx:verticalAxis>
+	                    <mx:LinearAxis id="v2"  baseAtZero="false" title="Volume" />           
+	                </mx:verticalAxis>					
+				</mx:ColumnSeries>  
+            </mx:series>
+            
+            <mx:annotationElements>
+    	        <mx:CartesianDataCanvas id="canvas" verticalAxis="{v1}"  includeInRanges="true"/>
+    	        <!-- <mx:Canvas id="canvas" /> -->
+	        </mx:annotationElements>
+
+        </mx:HLOCChart>		
+        <mx:SolidColor id="serieColor" color="0xCCCCCC" alpha=".7"/>		
+</mx:VBox>

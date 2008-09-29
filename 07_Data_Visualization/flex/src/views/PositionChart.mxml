@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+<mx:Script>
+	<![CDATA[
+	[Bindable]
+	public var positions:XMLList;
+				
+	private function formatLabel(data:Object, field:String, index:Number, percentValue:Number):String {
+            var temp:String= (" " + percentValue).substr(0,6);
+            return data.ticker + ": " + '\n' + data.estimated_total + '\n' + temp + "%";
+        }		
+	]]>
+</mx:Script>	
+	<mx:PieChart id="pie" width="100%" height="100%" dataProvider="{positions}">
+		<mx:series>
+			<mx:PieSeries
+				nameField="ticker" 
+				displayName="Estimated Amount" 
+				field="estimated_total"
+				labelPosition="insideWithCallout"
+				labelFunction="formatLabel"
+				/>
+		</mx:series>
+	</mx:PieChart>
+</mx:VBox>

@@ -1,0 +1,23 @@
+This is the code used for chapter 07 - Data Visualization.
+
+As usual the Flex application can be found under /flex/src and the Rails application under the /rails folder.
+
+The Rails application is an extension of the application found in 03_Flex_with_RESTful_Services/rails. I've tagged all new and changed functionality in the source code with the NEW: keyword to provide an overview of the changed functionality.. 
+
+The Rails application requires the hpricot and yahoofinance gem. Install them before starting the server.
+
+  gem install hpricot
+  sudo gem install yahoofinance
+
+To read more on hpricot, see  
+    http://code.whytheluckystiff.net/hpricot/wiki/InstallingHpricot
+
+This chapter provides two Flex applications:
+  TwoDimension.mxml - Various OLAP queries shown in the first part of the chapter.
+  StockPortfolio.mxml - The main stock portfolio application build in this chapter. This application is made of the following components under the src/views folder:
+      PortfolioSummary.mxml - demonstrate use of OLAPDataGrid
+      PositionList.mxml - demonstrate use of AdvancedDataGrid
+      PositionChart.mxml - shows use of PieChart
+      HistoricalPrices.mxml - shows use of HLOCChart
+      
+

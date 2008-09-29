@@ -1,0 +1,28 @@
+<h1>Listing movements</h1>
+
+<table>
+  <tr>
+    <th>Price</th>
+    <th>Date</th>
+    <th>Quantity</th>
+    <th>Position</th>
+    <th>Operation</th>
+  </tr>
+
+<% for movement in @movements %>
+  <tr>
+    <td><%=h movement.price %></td>
+    <td><%=h movement.date %></td>
+    <td><%=h movement.quantity %></td>
+    <td><%=h movement.position_id %></td>
+    <td><%=h movement.operation %></td>
+    <td><%= link_to 'Show', movement %></td>
+    <td><%= link_to 'Edit', edit_movement_path(movement) %></td>
+    <td><%= link_to 'Destroy', movement, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New movement', new_movement_path %>

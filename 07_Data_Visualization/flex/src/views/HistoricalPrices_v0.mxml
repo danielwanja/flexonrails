@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+<mx:Script>
+	<![CDATA[
+		[Bindable]
+		public var hiLoSerie:XMLList;
+	]]>
+</mx:Script>
+		<mx:HLOCChart id="hlocchart" height="100%" width="100%"
+            paddingRight="5" paddingLeft="5" 
+            showDataTips="true" dataProvider="{hiLoSerie}">
+            
+            <mx:verticalAxis>
+                <mx:LinearAxis id="vaxis" baseAtZero="false" title="Price"/>
+            </mx:verticalAxis>
+
+            <mx:horizontalAxis>
+                <mx:CategoryAxis id="haxis" categoryField="date" title="Date"/>
+            </mx:horizontalAxis>
+
+            <mx:horizontalAxisRenderers>
+                <mx:AxisRenderer axis="{haxis}" canDropLabels="true"/>
+            </mx:horizontalAxisRenderers>
+
+            <mx:series>
+                <mx:HLOCSeries openField="open" highField="high" lowField="low" closeField="close" />
+				<mx:ColumnSeries  xField="date" yField="volume" />                
+            </mx:series>
+        </mx:HLOCChart>				
+</mx:VBox>

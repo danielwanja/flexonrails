@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="100%" height="100%">
+<mx:Metadata>
+	[Event(name="newStock")]
+	[Event(name="sellStock", type="events.UpdateStockEvent")]
+	[Event(name="buyStock", type="events.UpdateStockEvent")]
+	[Event(name="selectStock", type="events.SelectStockEvent")]
+</mx:Metadata>	
+<mx:Script>
+	<![CDATA[
+		import mx.collections.XMLListCollection;
+		import mx.collections.HierarchicalData;
+		import events.SelectStockEvent;
+		import events.UpdateStockEvent;
+		import events.BuyNewStockEvent;
+		
+	[Bindable]
+	public var positions:XMLList;
+						
+	private function set refresGrid(value:XMLList):void {
+		groupingCollection.source = value;
+		groupingCollection.refresh();
+	}
+							
+	]]>
+</mx:Script>
+	<mx:Binding source="positions" destination="refresGrid" />
+	<!-- See http://flexpearls.blogspot.com/2007/11/xmllist-hierarchicaldata-and.html -->
+	<mx:AdvancedDataGrid id="positionGrid" width="100%" height="100%" 
+		change="dispatchEvent(new SelectStockEvent(event.currentTarget.selectedItem as XML))"
+		>
+		 <mx:dataProvider>
+  			<mx:GroupingCollection id ="groupingCollection"  childrenField="NONEXISTINGFIELDsubnodes">
+                <mx:grouping>
+                        <mx:Grouping>
+                                <mx:GroupingField name="sector" />
+                        </mx:Grouping>
+                </mx:grouping>
+            </mx:GroupingCollection> 		 
+        </mx:dataProvider>
+		<mx:groupedColumns>
+			<mx:AdvancedDataGridColumn headerText="Sector" dataField="sector"/>	
+			<mx:AdvancedDataGridColumn headerText="Symbol" dataField="ticker"/>	
+			<mx:AdvancedDataGridColumn headerText="Name" dataField="name"/>	
+			<mx:AdvancedDataGridColumnGroup headerText="Estimation">    
+				<mx:AdvancedDataGridColumn headerText="Quantity" dataField="quantity"/>	
+				<mx:AdvancedDataGridColumn headerText="Last Price" dataField="last_price"/>	
+				<mx:AdvancedDataGridColumn headerText="Estimated" dataField="estimated_total"/>
+			</mx:AdvancedDataGridColumnGroup>
+			<mx:AdvancedDataGridColumnGroup headerText="Industry">
+				<mx:AdvancedDataGridColumn headerText="Sector" dataField="sector"/>	
+				<mx:AdvancedDataGridColumn headerText="Industry" dataField="industry"/>								
+			</mx:AdvancedDataGridColumnGroup>						
+			<mx:AdvancedDataGridColumn headerText="Stock Exchange" dataField="stock_exchange"/>															
+		</mx:groupedColumns>
+	</mx:AdvancedDataGrid>
+	<!--
+	<mx:DataGrid id="positionGrid" dataProvider="{positions}"  width="100%" height="100%"
+		change="dispatchEvent(new SelectStockEvent(event.currentTarget.selectedItem as XML))" >
+		<mx:columns>
+			<mx:DataGridColumn headerText="Symbol" dataField="ticker"/>	
+			<mx:DataGridColumn headerText="Name" dataField="name"/>	
+			<mx:DataGridColumn headerText="Quantity" dataField="quantity"/>	
+			<mx:DataGridColumn headerText="Last Price" dataField="last_price"/>	
+			<mx:DataGridColumn headerText="Estimated" dataField="estimated_total"/>					
+			<mx:DataGridColumn headerText="Sector" dataField="sector"/>	
+			<mx:DataGridColumn headerText="Industry" dataField="industry"/>								
+			<mx:DataGridColumn headerText="Stock Exchange" dataField="stock_exchange"/>								
+		</mx:columns>
+	</mx:DataGrid>
+	-->			
+	<mx:HBox paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5">
+		<mx:Button label="New Stock" click="dispatchEvent(new Event('newStock'));" />
+		<mx:VRule  height="15"/>
+		<mx:Label text="{positionGrid.selectedItem.name}" fontWeight="bold"/>
+		<mx:Button label="Buy" 
+			click="dispatchEvent(new UpdateStockEvent(UpdateStockEvent.BUY, positionGrid.selectedItem as XML, Number(quantity.text)));" />
+		<mx:Button label="Sell" 
+			click="dispatchEvent(new UpdateStockEvent(UpdateStockEvent.SELL, positionGrid.selectedItem as XML, Number(quantity.text)));" />
+		<mx:Label text="Quantity:"/>
+		<mx:TextInput id="quantity"  text="{positionGrid.selectedItem.quantity}"/>
+	</mx:HBox>			
+</mx:VBox>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:resources="resources.*" 
+	xmlns:views="views.*"
+	layout="vertical"
+	applicationComplete="setup()">
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		import events.BuyNewStockEvent;
+		import mx.containers.TitleWindow;
+		import mx.managers.PopUpManager;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.rpc.AsyncToken;
+		import mx.rpc.Responder;
+		
+		import views.StockPicker;
+		
+		public function setup():void {
+			var call:AsyncToken = accounts.index.send();
+			call.addResponder(new mx.rpc.Responder(selectFirstAccount, fault));
+			positions_with_accounts.send();
+		}
+		public function selectFirstAccount(event:ResultEvent):void {
+			if (accounts.index.lastResult.account.length()>0) 
+				selectAccount(accounts.index.lastResult.account[0]);
+		}
+		public function selectAccount(account:XML):void {
+			accounts.id = account.id;
+			var call:AsyncToken = positions.index.send();
+			call.addResponder(new mx.rpc.Responder(result, fault));
+		}
+		public function result(event:ResultEvent):void {
+			//trace(event.result);
+		}
+		public function fault(event:FaultEvent):void {
+			mx.controls.Alert.show(event.fault.faultString, "Oops, something went wrong");
+		}
+		
+		[Bindable]
+		private var selectedPosition:XML;		
+		public function selectPosition(position:XML):void {
+			if (position==null) return; // Group selected
+			selectedPosition = position;
+			positions.id = position.id;
+			var call:AsyncToken = movements.index.send();
+			call.addResponder(new mx.rpc.Responder(positionResult, fault));	
+		}
+		public function positionResult(event:ResultEvent):void {
+			var call:AsyncToken = history.send()		
+			call.addResponder(new mx.rpc.Responder(historyResult, fault));	
+		}
+		public function historyResult(event:ResultEvent):void {
+			//trace(event.result);
+		}
+		
+				
+		public function showNewStockForm():void {
+			var picker:StockPicker = PopUpManager.createPopUp(this,StockPicker,true) as StockPicker;
+			picker.addEventListener(BuyNewStockEvent.BUY, buyNewStock);
+			PopUpManager.centerPopUp(picker);
+		}
+		
+		public function buyStock(position:XML, quantity:Number):void {
+			var call:AsyncToken = positions.create.send(<position>
+									<id>{position.id.toString()}</id>
+									<ticker>{position.ticker.toString()}</ticker>
+									<quantity>{quantity}</quantity>
+								  </position>)
+			call.addResponder(new mx.rpc.Responder(reloadAccount, fault));
+		}
+		public function sellStock(position:XML, quantity:Number):void {
+			var call:AsyncToken = positions.destroy.send(<position>
+									<id>{position.id.toString()}</id>
+									<ticker>{position.ticker.toString()}</ticker>
+									<quantity>{quantity}</quantity>
+								  </position>)	
+			call.addResponder(new mx.rpc.Responder(reloadAccount, fault));
+		}
+		public function buyNewStock(event:BuyNewStockEvent):void {
+//			var call:AsyncToken = positions.getCustomAction('buy').send(<position>
+			var call:AsyncToken = buy.send(<position>
+									<ticker>{event.ticker}</ticker>
+									<quantity>{event.quantity}</quantity>
+								  </position>)
+			call.addResponder(new mx.rpc.Responder(reloadAccount, fault));
+		}
+		public function reloadAccount(event:ResultEvent):void {
+			var call:AsyncToken = positions.index.send();
+			call.addResponder(new mx.rpc.Responder(result, fault));			
+		}
+
+	]]>
+</mx:Script>	
+
+<resources:ActiveResource id="accounts"  resoureName="accounts" />
+<mx:HTTPService id="positions_with_accounts" url="{ActiveResource.HOST}/accounts/positions_with_accounts"  resultFormat="e4x" />
+<resources:ActiveResource id="positions" resoureName="positions" prefix="{accounts.resource}" />
+<mx:HTTPService id="buy" url="{ActiveResource.HOST}{positions.resources}/buy" contentType="application/xml"
+	method="POST" resultFormat="e4x" />
+<mx:HTTPService id="history" url="{ActiveResource.HOST}{positions.resource}/history"  resultFormat="e4x" />
+<resources:ActiveResource id="movements"  resoureName="movements"  prefix="{positions.resource}"  />
+
+	
+<mx:VDividedBox width="100%" height="100%">
+		<mx:HDividedBox width="100%" height="50%">
+			<mx:Panel title="All Accounts Overview by Sectors" width="40%" height="100%">
+				<views:PortfolioSummary width="100%"  height="100%" 
+					positions="{positions_with_accounts.lastResult.position}" />				
+				</mx:Panel>
+			<mx:Panel title="Positions for {accountSelection.selectedItem.name}" 
+				layout="vertical" width="60%" height="100%">
+				<mx:HBox>
+					<mx:ComboBox  width="200" 
+						id="accountSelection"
+						dataProvider="{accounts.index.lastResult.account}" 
+						change="selectAccount(event.currentTarget.selectedItem)"  
+						labelField="name"/>	
+					<mx:ToggleButtonBar id="positionViewType" dataProvider="['list','chart']" />				
+				</mx:HBox>
+				<mx:ViewStack width="100%" height="100%" selectedIndex="{positionViewType.selectedIndex}">
+					<views:PositionList width="100%"
+						positions="{positions.index.lastResult.position}" 
+						newStock="showNewStockForm();"
+						buyStock="buyStock(event.stock, event.quantity)"
+						sellStock="sellStock(event.stock, event.quantity)"
+						selectStock="selectPosition(event.stock)" />				
+					<views:PositionChart width="100%"		
+						positions="{positions.index.lastResult.position}" />			
+				</mx:ViewStack>
+			</mx:Panel>
+		</mx:HDividedBox>
+	<mx:TabNavigator width="100%" height="50%">
+		<views:HistoricalPrices label="Price History for {selectedPosition.name}" 
+			width="100%" height="100%"
+			hiLoSerie="{history.lastResult.record}"
+			movements="{movements.index.lastResult.movement}" />	
+		<mx:VBox label="movements" width="100%">
+			<mx:DataGrid dataProvider="{movements.index.lastResult.movement}" width="100%" height="100%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Operation" dataField="operation"/>	
+						<mx:DataGridColumn headerText="Quantity" dataField="quantity"/>	
+						<mx:DataGridColumn headerText="Date" dataField="created_at"/>	
+					</mx:columns>		
+			</mx:DataGrid>				
+		</mx:VBox>	
+	</mx:TabNavigator>
+</mx:VDividedBox>
+</mx:Application>

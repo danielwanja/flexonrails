@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  account_id: 1
+  quantity: 1
+  ticker: MyString
+  name: MyString
+
+two:
+  account_id: 1
+  quantity: 1
+  ticker: MyString
+  name: MyString
