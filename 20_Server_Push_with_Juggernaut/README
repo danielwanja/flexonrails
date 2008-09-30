@@ -1,0 +1,17 @@
+This is the code used for chapter 20 - Server Push with Juggernaut.
+
+On the Rails side you will need to install the follow gems
+
+$ sudo gem install json
+$ sudo gem install eventmachine
+$ sudo gem install juggernaut
+
+Configure juggernaut
+
+$ juggernaut -g config/juggernaut.yml
+$ juggernaut -c config/juggernaut.yml
+
+Install the juggernaut plugin
+$ ./script/plugin install http://juggernaut.rubyforge.org/svn/trunk/juggernaut
+
+On the Flex side the main application is IM.mxml and is a simplistic chat client.

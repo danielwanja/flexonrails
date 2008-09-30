@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:net="flash.net.*"
+	layout="vertical" 
+	applicationComplete="setup()"
+  	defaultButton="{send}" >
+<mx:Script>
+  <![CDATA[
+    import com.adobe.serialization.json.JSON;
+
+    private var hostName:String = "127.0.0.1"; 
+    private var port:uint = 5001;
+  
+    [Bindable]
+    private var connected:Boolean = false;
+    [Bindable]
+    private var messages:String="";
+    
+public function setup():void {
+  //Security.loadPolicyFile('http://localhost:3000/crossdomain.xml');
+  //Security.loadPolicyFile('xmlsocket://' + hostName + ':' + port);
+  socket.connect(hostName, port);
+}
+    
+private function closeHandler(event:Event):void {
+    log("ioErrorHandler: " + event);
+    connected = false;
+}
+
+private function connectHandler(event:Event):void {
+  connected = true;
+  var request:String = '{"command":"subscribe", "body":"", "type":"to_channels", "channels":["im_channel"]}';
+  socket.send(request);
+}
+
+private function dataHandler(event:DataEvent):void {
+    var data:Object = JSON.decode(event.data);
+    log("dataHandler" + data);
+    messages += "<br/><b>"+data.body.user+":</b>"+data.body.message;
+}
+
+private function ioErrorHandler(event:IOErrorEvent):void {
+    log("ioErrorHandler: " + event);
+    connected = false;
+}
+
+private function securityErrorHandler(event:SecurityErrorEvent):void {
+    log("securityErrorHandler: " + event);
+    connected = false;
+}
+
+private function log(msg:String):void {
+   trace(msg);
+   logMessages.text += msg +"\n";
+}         
+    
+  ]]>
+</mx:Script>
+<net:XMLSocket id="socket"
+	connect="connectHandler(event)" 
+	data="dataHandler(event)"
+	close="closeHandler(event)" 
+	ioError="ioErrorHandler(event)" 
+	securityError="securityErrorHandler(event)" />
+  
+<mx:HTTPService id="sendMessage" url="http://localhost:3000/messenger/message" 
+        method="POST" result="msg.text=''" fault="mx.controls.Alert.show(event.fault.faultString);">
+  <mx:request xmlns="">
+    <user>{user.text}</user>
+    <message>{msg.text}</message>
+  </mx:request>
+</mx:HTTPService>
+<mx:Label text="CONNECTED: {connected ? 'YES' : 'NO'}" />
+<mx:TextArea  width="100%" height="100%" htmlText="{messages}"/>  
+<mx:HBox>
+    <mx:Label text="User:" />
+    <mx:TextInput id="user" text="me"  width="100"/>
+    <mx:Label text="Message:" />
+  <mx:TextInput id="msg" />
+  <mx:Button id="send" label="Send"  click="sendMessage.send()" />  
+</mx:HBox>
+<mx:TextArea id="logMessages"  width="100%" height="120"/>
+</mx:Application>
