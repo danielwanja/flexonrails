@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal"
+	applicationComplete="categories.send()">
+<mx:Script>
+	<![CDATA[
+		import mx.collections.HierarchicalData;
+		
+		private function createHierarchicalData(root:XML):HierarchicalData {
+			return new HierarchicalData(root);
+		}
+		
+	]]>
+</mx:Script>	
+	
+	<mx:HTTPService id="categories" url="http://localhost:3000/categories" resultFormat="e4x" />
+	
+	<mx:AdvancedDataGrid id="grid" width="33%" height="100%"
+		dataProvider="{createHierarchicalData(categories.lastResult as XML)}">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Name" dataField="@name"/>
+			<mx:AdvancedDataGridColumn headerText="Qty In Stock" dataField="@qty_in_stock"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+
+<mx:Tree dataProvider="{categories.lastResult}" 
+	labelField="@name"
+	width="33%" height="100%" />
+	
+<mx:TextArea width="33%" height="100%" text="{categories.lastResult.toXMLString()}" />	
+	
+</mx:Application>

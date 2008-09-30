@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+  layout="vertical"
+  applicationComplete="categoriesIndex.send()">
+<mx:HTTPService id="categoriesIndex" url="http://localhost:3000/categories" resultFormat="e4x" result="resultHandler(event)"/>
+<mx:HTTPService id="categoriesCreate"  
+    url="http://localhost:3000/categories.xml"
+    method="POST" 
+    resultFormat="e4x" 
+    contentType="application/xml" 
+    result="resultHandler(event)" />
+<mx:HTTPService id="categoriesUpdate"  url="http://localhost:3000/categories/{tree.selectedItem.@id}.xml?_method=put"
+          method="POST" resultFormat="e4x"  contentType="application/xml" result="resultHandler(event)" />              
+<mx:HTTPService id="categoriesDelete"  url="http://localhost:3000/categories/{tree.selectedItem.@id}.xml"
+        method="POST" resultFormat="e4x" result="resultHandler(event)">
+  <mx:request xmlns="">
+    <_method>delete</_method>
+  </mx:request>  
+</mx:HTTPService>
+<mx:HTTPService id="categoriesMove"  url="http://localhost:3000/categories/{tree.selectedItem.@id}/move"
+          method="POST" resultFormat="e4x"  contentType="application/xml" result="resultHandler(event)" />              
+<mx:Script>
+  <![CDATA[
+  import mx.rpc.events.ResultEvent;
+   import mx.events.DragEvent;
+    import mx.managers.DragManager;
+    import mx.core.DragSource;
+              
+  [Bindable]
+  private var categories:XML;
+  
+  
+  private function clearFields():void {
+    nameField.text = "";
+    descriptionField.text = "";
+  }
+  private function resultHandler(result:ResultEvent):void {
+    categories = result.result as XML;
+    callLater(expandTree);  
+  }
+  private function expandTree():void{
+    tree.expandChildrenOf(categories, true) 
+  }
+  private function createCategory():void {
+    var newCategory:XML = <category name={nameField.text} description={descriptionField.text} />;
+    if (tree.selectedItem != null) newCategory.@parent_id = tree.selectedItem.@id
+    categoriesCreate.send(newCategory);
+  }
+  private function updateCategory():void {
+    tree.selectedItem.@name = nameField.text;
+    tree.selectedItem.@description = descriptionField.text;
+    categoriesUpdate.send(tree.selectedItem)    
+  }
+  private function droppedCategory(event:DragEvent):void {
+    event.preventDefault();
+    event.currentTarget.hideDropFeedback(event);
+      var movedCategory:XML = tree.selectedItem as XML;
+        tree.selectedIndex = tree.calculateDropIndex(event);
+      var dropOnCategory:XML = tree.selectedItem as XML;
+      movedCategory.@parent_id = tree.selectedItem.@id;
+    categoriesMove.send(movedCategory)    
+  }
+  ]]>
+</mx:Script>
+<mx:Tree id="tree" 
+  dataProvider="{categories}" 
+  labelField="@name"
+  width="100%" height="100%"
+  dragEnabled="true"
+  dropEnabled="true"
+  dragMoveEnabled="false"
+  dragDrop="droppedCategory(event)"
+   />
+<mx:Label text="Parent id:{tree.selectedItem.parent() != null ? tree.selectedItem.parent().@id : 'root' }" />
+<mx:Form>
+  <mx:FormItem label="id">
+    <mx:Label text="{tree.selectedItem==null? 'New record' :  tree.selectedItem.@id}"  />
+  </mx:FormItem>
+  <mx:FormItem label="name">
+    <mx:TextInput id="nameField" text="{tree.selectedItem.@name}" />
+  </mx:FormItem>
+  <mx:FormItem label="description">
+    <mx:TextInput id="descriptionField" text="{tree.selectedItem.@description}"   />
+  </mx:FormItem>
+</mx:Form>
+<mx:HBox>
+  <mx:Button label="Clear"   click="clearFields();" />
+  <mx:Button label="Create"   click="createCategory();" />
+  <mx:Button label="Update"   click="updateCategory()" />
+  <mx:Button label="Delete"   click="categoriesDelete.send()" />
+</mx:HBox>
+</mx:Application>

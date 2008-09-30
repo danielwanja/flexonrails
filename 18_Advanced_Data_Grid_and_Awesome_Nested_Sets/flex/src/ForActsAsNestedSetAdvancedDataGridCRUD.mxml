@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal"
+  applicationComplete="categoriesIndex.send()">
+<mx:Script>
+  <![CDATA[
+    import mx.rpc.events.ResultEvent;  
+    import mx.collections.HierarchicalData;
+    import mx.events.DragEvent;
+    import mx.managers.DragManager;
+    import mx.core.DragSource;
+        
+              
+  [Bindable]
+  private var categories:XML;
+          
+  private function createHierarchicalData(root:XML):HierarchicalData {
+      return new HierarchicalData(root);
+  }
+  
+  private function clearFields():void {
+    nameField.text = "";
+    descriptionField.text = "";
+  }
+  private function resultHandler(result:ResultEvent):void {
+    categories = result.result as XML;
+    callLater(expandTreeAndGrid);  
+  }
+  private function expandTreeAndGrid():void{
+    tree.expandChildrenOf(categories, true);
+    grid.expandAll(); 
+  }
+  private function createCategory():void {
+    var newCategory:XML = 
+        <category name={nameField.text} 
+                  description={descriptionField.text} />;
+    if (grid.selectedItem != null) 
+            newCategory.@parent_id = grid.selectedItem.@id
+    categoriesCreate.send(newCategory);
+  }
+  private function updateCategory():void {
+    var updateCategory:XML = grid.selectedItem as XML;
+    updateCategory.@name = nameField.text;
+    updateCategory.@description = descriptionField.text;
+    categoriesUpdate.send(updateCategory)    
+  }
+  
+  private function droppedCategory(event:DragEvent):void {
+    event.preventDefault();
+    event.currentTarget.hideDropFeedback(event);
+      var movedCategory:XML = grid.selectedItem as XML;
+      // could also get item with event.dragSource.dataForFormat("treeDataGridItems")[0]
+        grid.selectedIndex = grid.calculateDropIndex(event);
+      var dropOnCategory:XML = grid.selectedItem as XML;
+      movedCategory.@parent_id = grid.selectedItem.@id;
+    categoriesMove.send(movedCategory)
+  }
+    
+    
+  ]]>
+</mx:Script>  
+  
+<mx:HTTPService id="categoriesIndex" url="http://localhost:3000/categories" resultFormat="e4x" result="resultHandler(event)"/>
+<mx:HTTPService id="categoriesCreate"
+    url="http://localhost:3000/categories.xml"
+    method="POST"
+    resultFormat="e4x" 
+    contentType="application/xml" 
+    result="resultHandler(event)" />
+<mx:HTTPService id="categoriesUpdate"
+ url="http://localhost:3000/categories/{grid.selectedItem.@id}.xml?_method=put"
+    method="POST" 
+    resultFormat="e4x"  
+    contentType="application/xml" 
+    result="resultHandler(event)" />
+<mx:HTTPService id="categoriesDelete"
+    url="http://localhost:3000/categories/{grid.selectedItem.@id}.xml"
+    method="POST" 
+    resultFormat="e4x" 
+    result="resultHandler(event)">
+    <mx:request xmlns="">
+      <_method>delete</_method>
+    </mx:request>  
+</mx:HTTPService>
+<mx:HTTPService id="categoriesMove"  
+    url="http://localhost:3000/categories/{grid.selectedItem.@id}/move"
+    method="POST"
+    resultFormat="e4x"
+    contentType="application/xml"
+    result="resultHandler(event)" />
+  
+  <mx:VBox width="33%" height="100%">
+    <mx:AdvancedDataGrid id="grid" width="100%" height="100%"      
+      dataProvider="{createHierarchicalData(categories)}"
+      dragEnabled="true"
+      dropEnabled="true"
+      dragMoveEnabled="true"
+      dragDrop="droppedCategory(event)"
+      >
+      <mx:columns>
+        <mx:AdvancedDataGridColumn headerText="Name" dataField="@name"/>
+        <mx:AdvancedDataGridColumn headerText="Qty In Stock" dataField="@qty_in_stock"/>
+      </mx:columns>
+    </mx:AdvancedDataGrid>
+    <mx:Label text="Parent id:{grid.selectedItem.parent() != null ? grid.selectedItem.parent().@id : 'root' }" />
+    <mx:Form>
+      <mx:FormItem label="id">
+        <mx:Label text="{grid.selectedItem==null? 'New record' :  grid.selectedItem.@id}"  />
+      </mx:FormItem>
+      <mx:FormItem label="name">
+        <mx:TextInput id="nameField" text="{grid.selectedItem.@name}" />
+      </mx:FormItem>
+      <mx:FormItem label="description">
+        <mx:TextInput id="descriptionField" text="{grid.selectedItem.@description}"   />
+      </mx:FormItem>
+    </mx:Form>
+    <mx:HBox>
+      <mx:Button label="Clear"   click="clearFields();" />
+      <mx:Button label="Create"   click="createCategory();" />
+      <mx:Button label="Update"   click="updateCategory()" />
+      <mx:Button label="Delete"   click="categoriesDelete.send()" />
+    </mx:HBox>
+  </mx:VBox>
+<mx:Tree id="tree" dataProvider="{categories}" 
+  labelField="@name"
+  width="33%" height="100%" />
+<mx:TextArea width="33%" height="100%" text="{categories.toXMLString()}" />  
+  
+</mx:Application>

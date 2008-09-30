@@ -1,0 +1,17 @@
+This is the code for chapter 18 - Advanced Data Grid and Awesome Nested Sets                                       
+
+Before starting the Rails application perform the database creation and migration then load the following script
+
+  ./script/runner db/load_categories.rb
+    
+ForActsAsNestedSet.mxml
+  This is a bar minimum application that displays the nested set in a tree view component.
+
+ForActsAsNestedSetAdvancedDataGrid.mxml
+  This application displays the nested set in a tree view, advanced datagrid, and text area as XML.
+  
+ForActsAsNestedSetAdvancedDataGridCRUD.mxml
+  This is the main application shown in the chapter that allows CRUD and move functionality using the advanced datagrid and the nested set.
+  
+ForActsAsNestedSetCRUD.mxml
+  Similar to the main application but using a tree view.
