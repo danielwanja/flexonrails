@@ -1,5 +1,7 @@
 require 'hpricot'
-require 'open-uri'
+require 'open-uri'  
+# NEW: a utility class to extract from yahoo finance the sector and
+#      industry of a stock using Hpricot.
 # Daniel Wanja.
 # Extracts sector and industry from yahoo finance html page.
 class YahooSearch
