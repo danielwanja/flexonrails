@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+  xmlns:mx="http://www.adobe.com/2006/mxml" 
+  xmlns:net="flash.net.*"
+  xmlns:system="flash.system.*"   
+  layout="vertical"
+  creationComplete="image.load()" >
+<mx:Button label="Upload.." click="sendToServer()" />
+<mx:Image id="image" 
+      autoLoad="false"
+      source="http://flexonrails.com/book_images/butterfly.jpg"  
+      loaderContext="{loaderContext}"/>      
+<system:LoaderContext id="loaderContext" checkPolicyFile="true" />
+<net:URLLoader id="loader" complete="completeHandler(event)" dataFormat="binary"  />
+<mx:ProgressBar  mode="event" source="loader"/>
+<mx:Script>
+  <![CDATA[
+    import mx.utils.StringUtil;
+    import mx.graphics.codec.PNGEncoder;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    
+    private function sendToServer():void {
+      // 1. Encode image as a png
+        var pngEncoder:PNGEncoder = new PNGEncoder();
+        var bitmap:Bitmap = image.content as Bitmap;       
+        var bytes:ByteArray = pngEncoder.encode(bitmap.bitmapData);
+
+        // 2. Create multip part request
+      var boundary:String = '------------Ij5GI3GI3ei4GI3ei4KM7GI3KM7KM7';
+        var request: URLRequest = new URLRequest("http://localhost:3000/assets");
+      request.data = getMultiPartRequestData(boundary, 'asset', 'picture.png', bytes);
+      request.method = URLRequestMethod.POST;
+      request.contentType = "multipart/form-data; boundary=" + boundary;    
+      
+        // 3. Send to Server
+        loader.load(request);
+    }
+    
+    private function getMultiPartRequestData(boundary:String, 
+        resourceName:String, filename:String, bytes:ByteArray):ByteArray {
+      var lf:String = "\r\n";
+      var part1:String =  '--' + boundary + lf + 
+        'Content-Disposition: form-data; name="Filename"' + lf + lf +
+        '{0}' + lf +
+        '--' + boundary + lf +
+        'Content-Disposition: form-data; name="{1}[uploaded_data]";' + 
+        'filename="{0}"' + lf +
+        'Content-Type: application/octet-stream' + lf +lf 
+      var part2:String =  '--' + boundary + lf +
+        'Content-Disposition: form-data; name="Upload"' + lf + lf +
+        'Submit Query' + lf +
+        '--' + boundary +  '--'
+
+      var result:ByteArray = new ByteArray();
+      result.writeMultiByte(StringUtil.substitute(part1, filename, resourceName), "ascii");                    
+      result.writeBytes(bytes, 0, bytes.length)
+      result.writeMultiByte(part2, "ascii");
+      return result;
+    }
+    
+    private function completeHandler(event:Event):void {
+        mx.controls.Alert.show("File uploaded");
+    }    
+  ]]>
+</mx:Script>  
+</mx:Application>

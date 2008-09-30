@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:net="flash.net.*"
+	layout="vertical" >
+<mx:Button label="Upload.." click="fileReference.browse();" />
+<net:FileReference id="fileReference" select="selectHandler(event)" complete="completeHandler(event)" />
+<mx:ProgressBar  mode="event" source="fileReference"/>
+<mx:Script>
+	<![CDATA[
+		private function selectHandler(event:Event):void {
+			var request:URLRequest = new URLRequest("http://localhost:3000/assets")
+			var uploadDataFieldName:String = 'asset[uploaded_data]' 
+		    fileReference.upload(request, uploadDataFieldName);
+		}
+		private function completeHandler(event:Event):void {
+		    mx.controls.Alert.show("File uploaded");
+		}		
+	]]>
+</mx:Script>	
+</mx:Application>

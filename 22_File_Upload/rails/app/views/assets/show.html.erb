@@ -1,0 +1,38 @@
+<p>
+  <b>Size:</b>
+  <%=h @asset.size %>
+</p>
+
+<p>
+  <b>Content type:</b>
+  <%=h @asset.content_type %>
+</p>
+
+<p>
+  <b>Filename:</b>
+  <%=h @asset.filename %>
+</p>
+
+<p>
+  <b>Height:</b>
+  <%=h @asset.height %>
+</p>
+
+<p>
+  <b>Width:</b>
+  <%=h @asset.width %>
+</p>
+
+<p>
+  <b>Parent:</b>
+  <%=h @asset.parent_id %>
+</p>
+
+<p>
+  <b>Thumbnail:</b>
+  <%=h @asset.thumbnail %>
+</p>
+
+
+<%= link_to 'Edit', edit_asset_path(@asset) %> |
+<%= link_to 'Back', assets_path %>

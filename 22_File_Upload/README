@@ -1,0 +1,17 @@
+This is the code used for chapter 22 - FileUpload
+
+The Rails application needs the attchment_fu plug in installed:
+
+  ./script/plugin install git://github.com/technoweenie/attachment_fu.git 
+
+
+The Flex applications are the following
+
+FileUploadSimple.mxml
+  Use a flash.net.FileReference to browse and upload a file.
+  
+FileUploadWithProgress.mxml
+  As above with additional upload progress.
+  
+ImageUploadWithProgress.mxml
+  Upload an image using the flash.net.URLLoader class and a custom MultiPartRequestData class.
