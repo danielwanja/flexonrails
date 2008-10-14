@@ -1,0 +1,8 @@
+This is the code used for chapter 06 - Debugging
+
+Before starting the Rails application don't forget to create and migrate the database by doing the following:
+
+  rake db:create
+  rake db:migrate
+
+

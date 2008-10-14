@@ -1,0 +1,16 @@
+<h1>New widget</h1>
+
+<%= error_messages_for :widget %>
+
+<% form_for(@widget) do |f| %>
+  <p>
+    <b>Name</b><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', widgets_path %>

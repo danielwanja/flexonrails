@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" initialize="init()">
+	
+	<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		
+		private var greeting:String;
+		
+		private function init():void {
+			var greeter:Greeter = new Greeter();
+			greeting = greeter.sayHello();
+			Alert.show(greeting);
+		}
+		
+	]]>
+	</mx:Script>
+	
+</mx:Application>
