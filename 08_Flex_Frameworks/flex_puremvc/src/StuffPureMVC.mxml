@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:components="flexonrails.examples.stuff.view.components.*"
+	layout="horizontal"
+	backgroundGradientColors="[0xFFFFFF,0xFFFFFF]"
+	themeColor="0x009900"
+	color="0x000000"
+	horizontalAlign="left"
+	applicationComplete="init()"
+>
+
+	<mx:Script>
+	<![CDATA[
+		import org.puremvc.as3.patterns.observer.Notification;
+		import flexonrails.examples.stuff.ApplicationFacade;
+		
+		public var facade:ApplicationFacade = ApplicationFacade.getInstance();
+		
+		public function init():void {
+			facade.notifyObservers(new Notification(ApplicationFacade.STARTUP, this));
+		}
+		
+	]]>
+	</mx:Script>
+
+	<components:ContextList id="contextList" width="120" height="100%" backgroundColor="0xFFFFFF" />
+	<components:MainView id="mainView" width="100%" height="100%" backgroundColor="0xFFFFFF" />
+</mx:Application>

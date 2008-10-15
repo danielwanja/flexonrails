@@ -1,0 +1,29 @@
+flex helper tasks
+==============
+
+rake flex:ar2as			# Reads all ActiveRecord models and translates to Actionscript 3 VOs
+
+This task reads a given set of models, or if none given, all models and creates Actionscript VOs in the given directory and package structure. For instance: `rake flex:ar2as src_dir=../flex/src package_name=com.foo.vo` will create a VO for each model in ../flex/src/com/foo/vo, named the same as the model complete with RemoteClass alias and all model attributes and associations. Associations assume that the other classes are in the same directory and are also named the same as the ActiveRecord model.
+
+Options:
+- models: A comma delimited list of model names
+example: models=foo,bar
+default: omit this option to use all models in app/models
+
+- overwrite (false|true): Overwrite existing VO files
+example: overwrite=false
+default: false
+
+- src_dir: Location of flex source directory
+example: src_dir=../flex/src
+default: current working directory
+
+- package_name: Package to use in VO definition. Also used as a directory relative to the flex source directory
+example: package_name=com.foo
+default: '' (empty string)
+
+- camel_case (false|true): Whether to translate snake_case attribute names to camelCase
+example: camel_case=true
+default: true
+
+- include_parents (false|true): UNUSED

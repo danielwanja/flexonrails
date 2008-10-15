@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Script>
+	<![CDATA[
+		import flexonrails.examples.stuff.events.CreateTaskEvent;
+		import flexonrails.examples.stuff.model.StuffModelLocator;
+		
+		[Bindable] private var model:StuffModelLocator = StuffModelLocator.getInstance();
+		
+		private function addTask():void {
+			new CreateTaskEvent(model.selectedContext).dispatch();
+		}
+		
+	]]>
+	</mx:Script>
+
+	<mx:HBox id="appLabelContainer" width="100%" horizontalGap="0">
+		<mx:Label id="stuffLabel" fontWeight="bold" fontSize="18" text="Stuff" />
+		<mx:Label id="stuffForLabel"
+			fontWeight="bold"
+			fontSize="18"
+			text="for {model.selectedContext.label}"
+			visible="{model.selectedContext != null}"
+			includeInLayout="{model.selectedContext != null}"
+		/>
+		<mx:Spacer width="100%" />
+		<mx:Button id="addTaskButton" label="+ Add Task" visible="{model.selectedContext != null}" includeInLayout="{model.selectedContext != null}" click="addTask()" />
+	</mx:HBox>
+	<mx:List id="tasksList" width="100%" height="100%" dataProvider="{model.selectedContext.tasks}" itemRenderer="flexonrails.examples.stuff.view.renderers.TaskItemRenderer" />
+	
+</mx:VBox>

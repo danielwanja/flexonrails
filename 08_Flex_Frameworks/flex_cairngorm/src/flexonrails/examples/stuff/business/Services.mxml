@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:cairngorm="com.adobe.cairngorm.business.*">
+
+    <mx:RemoteObject
+    	id="contextsService"
+    	destination="rubyamf" 
+    	endpoint="http://localhost:3000/rubyamf_gateway/"
+    	source="ContextsController"
+    	showBusyCursor="true"
+    />
+    <mx:RemoteObject
+    	id="tasksService"
+    	destination="rubyamf"
+    	endpoint="http://localhost:3000/rubyamf_gateway/"
+    	source="TasksController"
+    	showBusyCursor="true"
+    />
+
+</cairngorm:ServiceLocator>

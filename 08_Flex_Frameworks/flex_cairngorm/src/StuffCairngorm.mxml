@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:view="flexonrails.examples.stuff.view.*"
+	xmlns:control="flexonrails.examples.stuff.control.*"
+	xmlns:business="flexonrails.examples.stuff.business.*"
+	layout="horizontal"
+	backgroundGradientColors="[0xFFFFFF,0xFFFFFF]"
+	themeColor="0x009900"
+	color="0x000000"
+	horizontalAlign="left"
+	applicationComplete="init()"
+>
+
+	<mx:Script>
+	<![CDATA[
+		import flexonrails.examples.stuff.events.LoadAllContextsEvent;
+		
+		public function init():void {
+			new LoadAllContextsEvent().dispatch();
+		}
+		
+	]]>
+	</mx:Script>
+
+	<business:Services id="services" />
+	<control:StuffController id="controller" />
+	
+	<view:ContextList id="contextList" width="120" height="100%" backgroundColor="0xFFFFFF" />
+	<view:MainView id="mainView" width="100%" height="100%" backgroundColor="0xFFFFFF" />
+</mx:Application>

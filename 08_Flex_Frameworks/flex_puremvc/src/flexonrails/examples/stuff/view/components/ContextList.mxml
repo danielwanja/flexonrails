@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Metadata>
+		[Event('new')]
+		[Event('edit')]
+		[Event('select')]
+		[Event('delete')]
+	</mx:Metadata>
+	
+	<mx:Script>
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import flexonrails.examples.stuff.model.vo.Context;
+		
+		public static const NEW:String		= 'new';
+		public static const EDIT:String		= 'edit';
+		public static const SELECT:String	= 'select';
+		public static const DELETE:String	= 'delete';
+		
+		[Bindable] public var contexts:ArrayCollection;
+		[Bindable] private var editing:Boolean;
+		public var selectedContext:Context;
+		
+		private function contextSelected():void {
+			dispatchEvent(new Event(SELECT, true));
+		}
+		
+		private function showEditor():void {
+			editing = true;
+			newContextLabel.setFocus();
+		}
+		
+		private function addContext():void {
+			dispatchEvent(new Event(NEW, true));
+			editing = false;
+		}
+		
+		private function cancelAdd():void {
+			newContextLabel.text = "";
+			editing = false;
+		}
+		
+		private function removeSelectedContext():void {
+			dispatchEvent(new Event(DELETE, true));
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:Style>
+		.nonRoundedButtons {
+			corner-radius: 0;
+			border-style: solid;
+		}
+
+		.smallControls {
+			corner-radius: 0;
+			border-style: solid;
+			font-size: x-small;
+		}
+	</mx:Style>
+	
+	<mx:Binding source="contextList.selectedItem as Context" destination="selectedContext" />
+	
+	<mx:Label id="header" text="Contexts" fontSize="12" fontWeight="bold" />
+	<mx:List id="contextList" width="100%" height="100%" borderStyle="none" dataProvider="{contexts}" itemClick="contextSelected()" />
+	<mx:VBox id="newContextControls" width="100%" horizontalGap="0" visible="{editing}" includeInLayout="{editing}">
+		<mx:TextInput id="newContextLabel" enter="addContext()" styleName="smallControls" width="100%" />
+		<mx:HBox width="100%" horizontalGap="0">
+			<mx:Button id="addContextButton" label="add" click="addContext()" styleName="smallControls" />
+			<mx:Button id="cancelAddButton" label="cancel" click="cancelAdd()" styleName="smallControls" />
+		</mx:HBox>
+	</mx:VBox>
+	<mx:HBox id="controlContainer" width="100%" height="20" horizontalGap="0">
+		<mx:Button id="addButton" label="+" height="20" styleName="nonRoundedButtons" click="showEditor()" />
+		<mx:Button id="removeButton" label="-" height="20" styleName="nonRoundedButtons" enabled="{contextList.selectedItem != null}" click="removeSelectedContext()" />
+	</mx:HBox>
+</mx:VBox>

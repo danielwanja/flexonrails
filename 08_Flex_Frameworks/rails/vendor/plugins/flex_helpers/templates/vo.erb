@@ -1,0 +1,19 @@
+/**
+	Created with ar2as on: <%= Time.new.inspect %>
+	Created from Schema Version: <%= schema_version %>
+*/
+package <%= package %> {
+	
+	[Bindable]
+	[RemoteClass(alias="<%= klass %>")]
+	public class <%= klass %> {
+		
+		<% unless attributes.empty? %>// attributes<% end %>
+		<% attributes.sort.each do |attribute_name, attribute_type| %>public var <%= attribute_name %>:<%= attribute_type %>;
+		<% end %>
+		<% unless associations.empty? %>// associations<% end %>
+		<% associations.sort.each do |association_name, association_type| %>public var <%= association_name %>:<%= association_type %>;
+		<% end %>
+	}
+
+}

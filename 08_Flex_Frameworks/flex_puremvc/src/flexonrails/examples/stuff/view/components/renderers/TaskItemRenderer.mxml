@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" height="60">
+
+	<mx:Script>
+	<![CDATA[
+		import flexonrails.examples.stuff.model.vo.Task;
+		
+		public static const DELETE_TASK:String = 'DELETE_TASK';
+		
+		[Bindable] public var task:Task;
+		[Bindable] public var editing:Boolean;
+		
+		override public function set data(value:Object):void {
+			super.data = value;
+			task = data as Task;
+			if (task && task.newTask) {
+				editing = true;
+			}
+		}
+		
+		public function toggleEdit():void {
+			if (editing) {
+				if (task.label != taskLabelEditText.text) {
+					task.label = taskLabelEditText.text;
+				}
+			} else {
+				taskLabelEditText.setFocus();
+			}
+			editing = !editing
+		}
+		
+		public function toggleCompleteTask():void {
+			if (completeCheckbox.selected) {
+				// in the "real world" we'd probably not use local dates
+				// but this works for an example.
+				task.completedAt = new Date();
+			} else {
+				task.completedAt = null;
+			}
+		}
+		
+		public function deleteTask():void {
+			dispatchEvent(new Event(DELETE_TASK, true));
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%">
+		<mx:Label id="taskLabel" fontSize="12" fontWeight="bold" text="{task.label}" visible="{!editing}" includeInLayout="{!editing}" />
+		<mx:TextInput id="taskLabelEditText" text="{task.label}" visible="{editing}" includeInLayout="{editing}" enter="toggleEdit()" />
+		<mx:Spacer width="100%" />
+		<mx:CheckBox id="completeCheckbox" selected="{task.completedAt != null}" click="toggleCompleteTask()" />
+		<mx:Button id="deleteTaskButton" label="x" click="deleteTask()" />
+	</mx:HBox>
+	<mx:Button id="editButton" label="{editing ? 'save' : 'edit'}" click="toggleEdit()" />
+	
+</mx:VBox>

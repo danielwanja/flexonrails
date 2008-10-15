@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Metadata>
+		[Event("addTask")]
+	</mx:Metadata>
+
+	<mx:Script>
+	<![CDATA[
+		import flexonrails.examples.stuff.model.vo.Context;
+		
+		public static const ADD_TASK:String = 'addTask';
+		
+		[Bindable]
+		public var selectedContext:Context;
+		
+	]]>
+	</mx:Script>
+
+	<mx:HBox id="appLabelContainer" width="100%" horizontalGap="0">
+		<mx:Label id="stuffLabel" fontWeight="bold" fontSize="18" text="Stuff" />
+		<mx:Label id="stuffForLabel"
+			fontWeight="bold"
+			fontSize="18"
+			text="for {selectedContext.label}"
+			visible="{selectedContext != null}"
+			includeInLayout="{selectedContext != null}"
+		/>
+		<mx:Spacer width="100%" />
+		<mx:Button id="addTaskButton" label="+ Add Task" visible="{selectedContext != null}" includeInLayout="{selectedContext != null}" click="dispatchEvent(new Event(ADD_TASK))" />
+	</mx:HBox>
+	<mx:List
+		id="tasksList"
+		width="100%"
+		height="100%"
+		dataProvider="{selectedContext.tasks}"
+		itemRenderer="flexonrails.examples.stuff.view.components.renderers.TaskItemRenderer"
+	/>
+	
+</mx:VBox>

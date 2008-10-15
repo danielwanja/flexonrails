@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" height="60">
+	<mx:Script>
+	<![CDATA[
+		import flexonrails.examples.stuff.events.DeleteTaskEvent;
+		import flexonrails.examples.stuff.model.StuffModelLocator;
+		import flexonrails.examples.stuff.events.SaveTaskEvent;
+		import flexonrails.examples.stuff.vo.Task;
+		
+		[Bindable] private var model:StuffModelLocator = StuffModelLocator.getInstance();
+		[Bindable] private var task:Task;
+		[Bindable] private var editing:Boolean;
+		
+		override public function set data(value:Object):void {
+			super.data = value;
+			task = data as Task;
+			if (task && task.newTask) {
+				editing = true;
+			}
+		}
+		
+		public function toggleEdit():void {
+			if (editing) {
+				if (task.label != taskLabelEditText.text) {
+					task.label = taskLabelEditText.text;
+					saveTask();
+				}
+			} else {
+				taskLabelEditText.setFocus();
+			}
+			editing = !editing
+		}
+		
+		public function toggleCompleteTask():void {
+			if (completeCheckbox.selected) {
+				task.completedAt = new Date();
+			} else {
+				task.completedAt = null;
+			}
+			saveTask();
+		}
+		
+		public function deleteTask():void {
+			new DeleteTaskEvent(task, model.selectedContext).dispatch();
+		}
+		
+		public function saveTask():void {
+			new SaveTaskEvent(task, model.selectedContext).dispatch();
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%">
+		<mx:Label id="taskLabel" fontSize="12" fontWeight="bold" text="{task.label}" visible="{!editing}" includeInLayout="{!editing}" />
+		<mx:TextInput id="taskLabelEditText" text="{task.label}" visible="{editing}" includeInLayout="{editing}" enter="toggleEdit()" />
+		<mx:Spacer width="100%" />
+		<mx:CheckBox id="completeCheckbox" selected="{task.completedAt != null}" click="toggleCompleteTask()" />
+		<mx:Button id="deleteTaskButton" label="x" click="deleteTask()" />
+	</mx:HBox>
+	<mx:Button id="editButton" label="{editing ? 'save' : 'edit'}" click="toggleEdit()" />
+	
+</mx:VBox>
