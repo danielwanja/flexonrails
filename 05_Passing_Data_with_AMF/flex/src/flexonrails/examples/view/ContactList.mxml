@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()"
+	>
+	
+	<mx:Metadata>
+		[Event('contactSelected')]
+	</mx:Metadata>
+
+	<mx:Script>
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
+		import mx.events.ListEvent;
+		import mx.events.ItemClickEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.AsyncToken;
+
+		import flexonrails.examples.vo.Contact;
+		
+		public var selectedContact:Contact;
+		
+		private const ADD:String = "+";
+		private const REMOVE:String = "-";
+	
+		[Bindable]
+		private var contactList:ArrayCollection;
+		
+		// Service Methods
+		private function init():void {
+			contactListService.find_all();
+		}
+		
+		// called by contactListService when a call to 'index' returns
+		private function contactsLoaded(data:Object):void {
+			var re:ResultEvent = data as ResultEvent;
+			contactList = re.result as ArrayCollection;
+		}
+		
+		// called by contactListService when a call to 'destroy' returns
+		private function contactDestroyed(data:Object):void {
+			var re:ResultEvent = data as ResultEvent;
+			var index:int = contactList.getItemIndex(selectedContact);
+			contactList.removeItemAt(index);
+			selectedContact = null;
+			dispatchEvent(new Event('contactSelected'));
+		}
+		
+		// called by contactListService when a service error returns
+		private function serviceFault(data:Object):void {
+			var fe:FaultEvent = data as FaultEvent;
+			Alert.show("An error occurred: " + fe.fault.faultString);
+		}
+		
+		// Label Function for List
+		private function labelMaker(item:Object):String {
+			return item.firstName + " " + item.lastName;
+		}
+		
+		// Component Event Methods
+		private function buttonBarClicked(ice:ItemClickEvent):void {
+			switch (ice.label) {
+				case ADD :
+					var newContact:Contact = new Contact();
+					newContact.firstName = "New";
+					newContact.lastName = "Contact";
+					contactList.addItem(newContact);
+					selectedContact = newContact;
+					contacts.selectedItem = newContact;
+					contactSelected(null);
+				break;
+				
+				case REMOVE :
+					if (!contacts.selectedItem) return;
+					contactListService.destroy(selectedContact.id);
+				break;
+			}
+		}
+		
+		private function contactSelected(le:ListEvent):void {
+			var contact:Contact = contacts.selectedItem as Contact;
+			selectedContact = contact;
+			dispatchEvent(new Event('contactSelected'));
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:RemoteObject
+		id="contactListService"
+		destination="rubyamf"
+		source="ContactsController"
+		endpoint="http://localhost:3000/rubyamf_gateway"
+		fault="serviceFault(event)"
+		showBusyCursor="true">
+		<mx:method name="find_all" result="contactsLoaded(event)" />
+		<mx:method name="destroy" result="contactDestroyed(event)" />
+	</mx:RemoteObject>
+	
+	<mx:List
+		id="contacts"
+		left="0"
+		right="0"
+		top="0"
+		bottom="{addRemoveButtons.height}"
+		labelFunction="labelMaker"
+		dataProvider="{contactList}"
+		itemClick="contactSelected(event)"
+	/>
+	
+	<mx:ButtonBar id="addRemoveButtons" left="0" bottom="0" itemClick="buttonBarClicked(event)">
+		<mx:String>{ADD}</mx:String>
+		<mx:String>{REMOVE}</mx:String>
+	</mx:ButtonBar>
+</mx:Canvas>

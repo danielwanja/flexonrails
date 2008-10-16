@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:business="flexonrails.examples.business.*"
+	xmlns:control="flexonrails.examples.control.*"
+	xmlns:view="flexonrails.examples.view.*"
+	layout="absolute"
+	width="100%" height="100%"
+	backgroundColor="0xEEEEEE"
+>
+	
+	<mx:Script>
+	<![CDATA[
+		
+		public function contactSelected():void {
+			contactView.selectedContact = contactList.selectedContact;
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:Label id="contactsHeader" text="Contacts" fontWeight="bold" fontSize="18" />
+	<mx:HDividedBox left="0" top="{contactsHeader.height}" right="0" bottom="0">
+		<view:ContactList id="contactList" height="100%" width="33%" contactSelected="contactSelected()" />
+		<view:ContactView id="contactView" height="100%"/>
+	</mx:HDividedBox>
+</mx:Application>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+	<mx:Style>
+		.textInput {
+			font-weight: bold;
+			font-size: 18;
+		}
+		
+		.label {
+			color: #666666;
+			font-weight: bold;
+			font-family: Arial;
+		}
+	</mx:Style>
+	
+	<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import flexonrails.examples.vo.Contact;
+		
+		[Bindable]
+		public var selectedContact:Contact;
+		
+		private function saveContact():void {
+			selectedContact.firstName = firstNameText.text;
+			selectedContact.lastName = lastNameText.text;
+			selectedContact.email = emailText.text;
+			selectedContact.homePhone = homePhoneText.text;
+			selectedContact.officePhone = officePhoneText.text;
+			contactListService.save(selectedContact)
+		}
+		
+		// called by contactListService when a call to 'save' returns
+		private function contactSaved(data:Object):void {
+			var re:ResultEvent = data as ResultEvent;
+			var returnedContact:Contact = re.result as Contact;
+			selectedContact.id = returnedContact.id; // in case this contact is new
+		}
+		
+		// called by contactListService when a service error returns
+		private function serviceFault(data:Object):void {
+			var fe:FaultEvent = data as FaultEvent;
+			Alert.show("An error occurred: \n" + fe.fault.faultString);
+		}
+		
+	]]>
+	</mx:Script>
+
+	<mx:RemoteObject
+		id="contactListService"
+		destination="rubyamf"
+		source="ContactsController"
+		endpoint="http://localhost:3000/rubyamf_gateway"
+		showBusyCursor="true">
+		<mx:method name="save" result="contactSaved(event)" fault="serviceFault(event)" />
+	</mx:RemoteObject>
+	
+	<mx:Label id="firstNameLabel" styleName="label" text="First Name" />
+	<mx:TextInput styleName="textInput" id="firstNameText" text="{selectedContact.firstName}" />
+	
+	<mx:Label id="lastNameLabel" styleName="label" text="Last Name" />
+	<mx:TextInput styleName="textInput" id="lastNameText" text="{selectedContact.lastName}" />
+	
+	<mx:Label id="emailLabel" styleName="label" text="e-mail" />
+	<mx:TextInput styleName="textInput" id="emailText" text="{selectedContact.email}" />
+	
+	<mx:Label id="homePhoneLabel" styleName="label" text="Home Phone" />
+	<mx:TextInput styleName="textInput" id="homePhoneText" text="{selectedContact.homePhone}" />
+	
+	<mx:Label id="officePhoneLabel" styleName="label" text="Work Phone" />
+	<mx:TextInput styleName="textInput" id="officePhoneText" text="{selectedContact.officePhone}" />
+	
+	<mx:Button id="saveButton" label="Save" enabled="{selectedContact != null}" click="saveContact()" />
+	
+</mx:VBox>

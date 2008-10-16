@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  first_name: Bob
+  last_name:  Dobbs
+  email: bd@somewhere.com
+  office_phone: 3031234567
+  home_phone: 3031234567
+
+two:
+  first_name: John
+  last_name: Smith
+  email: js@somewhere.com
+  office_phone: 3034567890
+  home_phone: 3034567891
