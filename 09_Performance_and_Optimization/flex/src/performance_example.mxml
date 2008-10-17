@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="vertical"
+	creationComplete="boxRotator.play()">
+	
+	<mx:Script>
+	<![CDATA[
+		
+		public function shortMethod():void {
+			var a:int
+			for (var i:int = 0; i < 1000; i++) {
+				a++;
+			}
+		}
+		
+		public function longRunningMethod():void {
+			var a:int
+			for (var i:int = 0; i < 10000000; i++) {
+				a++;
+			}
+		}
+		
+	]]>
+	</mx:Script>
+	<mx:Rotate
+		id="boxRotator"
+		duration="2000"
+		repeatCount="0"
+		target="{coloredBox}"
+	/>
+
+	<mx:Canvas
+		id="coloredBox"
+		width="100"
+		height="100"
+		backgroundColor="0xFF0000"
+	/>
+	
+	<mx:Spacer height="40" />
+	
+	<mx:Button
+		id="shortMethodButton"
+		click="shortMethod()"
+		label="run short method"
+	/>
+	<mx:Button
+		id="longRunningMethodButton"
+		click="longRunningMethod()"
+		label="run long running method"
+	/>
+	
+</mx:Application>

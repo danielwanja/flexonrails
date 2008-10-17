@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Label id="sizeLabel" top="0" left="0" text="{width}" styleName="whiteLabel" />
+</mx:Canvas>

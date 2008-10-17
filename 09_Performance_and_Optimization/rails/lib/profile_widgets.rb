@@ -1,0 +1,1 @@
+get '/widgets.xml'

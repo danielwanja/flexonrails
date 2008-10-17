@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Script>
+	<![CDATA[
+		import mx.core.Container;
+		
+		public function showForSequence(sequence:Array):void {
+			var highestFirst:Array = sequence.reverse();
+			var i:String;
+			var index:int;
+			var num:Number;
+			var s:FibonacciSquare;
+			var parentContainer:Container = this;
+			
+			// to fix the leak, uncomment below
+			//removeAllChildren();
+			
+			for (i in highestFirst) {
+				index = int(i);
+				if (index != highestFirst.length) {
+					num = highestFirst[index];
+					s = new FibonacciSquare();
+					s.width = s.height = num
+					parentContainer.addChild(s);
+					parentContainer = s;
+				}
+			}
+		}
+		
+	]]>
+	</mx:Script>
+	
+</mx:Canvas>
