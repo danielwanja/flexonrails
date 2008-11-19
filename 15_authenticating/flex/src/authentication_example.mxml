@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" currentState="loggedOut">
+
+	<mx:Script>
+	<![CDATA[
+		import vo.User;
+		import mx.controls.Alert;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		
+		[Bindable]
+		public var user:User;
+	
+		private function login():void {
+			sessionService.create({login:usernameText.text, password:passwordText.text});
+			usernameText.text = passwordText.text = '';
+		}
+		
+		private function logout():void {
+			sessionService.destroy();
+		}
+		
+		private function callTestService():void {
+			testService.test();
+		}
+		
+		private function loginResult(re:ResultEvent):void {
+			user = re.result as User;
+			if (user) {
+				currentState = 'loggedIn'
+			} else {
+				currentState = "loggedOut"
+			}
+		}
+		
+		private function loginFault(fe:FaultEvent):void {
+			Alert.show(fe.fault.message);
+		}
+		
+		private function testResult(re:ResultEvent):void {
+			var success:Boolean = re.result as Boolean;
+			if (success) {
+				Alert.show("Authenticated Test Call Successful!");
+			} else {
+				Alert.show("Authenticated Test Call Failed!");
+			}
+		}
+		
+		private function testFault(fe:FaultEvent):void {
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="sessionService" destination="rubyamf" source="SessionsController" endpoint="http://localhost:3000/rubyamf_gateway" result="loginResult(event)" fault="loginFault(event)" /> 
+	<mx:RemoteObject id="testService" destination="rubyamf" source="TestServiceController" endpoint="http://localhost:3000/rubyamf_gateway" result="testResult(event)" fault="testFault(event)" /> 
+
+	<mx:states>
+		<mx:State name="loggedIn">
+			<mx:RemoveChild target="{loginPanel}"/>
+			<mx:AddChild position="lastChild">
+				<mx:VBox id="logoutBox" verticalCenter="0" horizontalCenter="0" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Logged In As {user.login}" horizontalCenter="0" verticalCenter="0" fontWeight="bold" fontSize="21" color="#000000"/>
+					<mx:Button id="logoutButton" label="Log Out" click="logout()" />
+				</mx:VBox>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="loggedOut">
+		</mx:State>
+	</mx:states>
+	<mx:Button id="testServiceButton" label="Test Authenticated Service Call" top="20" horizontalCenter="0" click="callTestService()" />
+	<mx:Panel id="loginPanel" width="250" height="200" layout="vertical" verticalCenter="0" horizontalCenter="0" title="Log in">
+		<mx:Label text="User name"/>
+		<mx:TextInput id="usernameText" enter="login()" />
+		<mx:Label text="Password"/>
+		<mx:TextInput id="passwordText" displayAsPassword="true" enter="login()" />
+		<mx:Button id="loginButton" label="Log in" click="login()" />
+	</mx:Panel>
+</mx:Application>

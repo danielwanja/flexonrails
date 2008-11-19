@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+mega_corp:
+  id: 1
+  name: MegaCorp, Inc
+
+ma_and_pa:
+  id: 2
+  name: Ma and Pa Kettle's General Store

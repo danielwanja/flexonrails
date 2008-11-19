@@ -1,0 +1,20 @@
+<objects>
+    <object id="productionServiceURL" class="String">
+        <constructor-arg value="http://foocorp.com"/>
+    </object>
+	
+    <object id="stageServiceURL" class="String">
+        <constructor-arg value="http://12.34.56.78"/>
+    </object>
+	
+    <object id="localServiceURL" class="String">
+        <constructor-arg value="http://localhost:3000"/>
+    </object>
+	
+
+	<object class="AppModel" factory-method="getInstance">
+		<property name="serviceURL">
+			<ref>stageServiceURL</ref>
+		</property>
+	</object>
+</objects>

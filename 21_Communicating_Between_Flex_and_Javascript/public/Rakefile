@@ -1,0 +1,17 @@
+require 'rake/clean'
+
+#change these paths to match the location of the Flex SDK files
+FLEX_SDK="/Applications/fb_3/sdks/3.0.0"
+FA_BRIDGE_SRC="/frameworks/javascript/fabridge/src"
+
+CLEAN.include '*.swf'
+
+task :default => [ :index, :fabridge ]
+
+file "index" do
+  sh %{ mxmlc -locale=en_US index.mxml }
+end
+
+file "fabridge" do
+  sh %{ mxmlc -locale=en_US -sp+=#{FLEX_SDK}#{FA_BRIDGE_SRC} fabridge.mxml }
+end

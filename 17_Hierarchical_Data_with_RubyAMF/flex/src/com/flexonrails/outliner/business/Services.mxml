@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator xmlns:mx="http://www.adobe.com/2006/mxml" 
+	                      xmlns:cairngorm="com.adobe.cairngorm.business.*" >
+	
+	<mx:Script>
+	<![CDATA[
+
+		public static const OUTLINE_POINTS_SERVICE:String = 'outlinePointsService';		
+
+		[Bindable]
+		private var gateway:String = "http://localhost:3000/rubyamf_gateway";
+		
+	]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="outlinePointsService" destination="rubyamf" endpoint="{gateway}" source="OutlinePointsController" />
+
+</cairngorm:ServiceLocator>

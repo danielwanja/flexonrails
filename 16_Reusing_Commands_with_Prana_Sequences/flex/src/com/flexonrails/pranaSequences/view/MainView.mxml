@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script>
+	<![CDATA[
+		import com.flexonrails.pranaSequences.vo.Note;
+		import com.flexonrails.pranaSequences.model.ModelLocator;
+		
+		[Bindable]
+		private var model:ModelLocator = ModelLocator.getInstance();
+		
+		public function selectNote():void {
+			model.selectedNote = notesList.selectedItem as Note;
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:constraintColumns>
+		<mx:ConstraintColumn id="leftColumn" width="100" />
+		<mx:ConstraintColumn id="rightColumn" width="100%" />
+	</mx:constraintColumns>
+	<mx:constraintRows>
+		<mx:ConstraintRow id="headerRow" height="40" />
+		<mx:ConstraintRow id="bodyRow" height="100%" />
+	</mx:constraintRows>
+	
+	<mx:Label text="FlexNotes" styleName="headerLabel" />
+	
+	<mx:List id="notesList" top="bodyRow:0" bottom="0" left="leftColumn:0" right="rightColumn:0" dataProvider="{model.user.notes}" labelField="title" change="selectNote()" />
+	<mx:TextArea id="noteContents" top="bodyRow:0" right="0" bottom="0" left="rightColumn:5" text="{model.selectedNote.content}" />
+	
+</mx:Canvas>

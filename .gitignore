@@ -1,6 +1,5 @@
 bin-debug
 bin
-*.log
 tmp/**/*
 doc/api
 doc/app

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" applicationComplete="init()">
+	<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		import org.pranaframework.context.support.XMLApplicationContext;
+		
+		private var applicationContext:XMLApplicationContext;
+		
+		[Bindable] public var model:AppModel = AppModel.getInstance();
+		
+		private function init():void {
+			applicationContext = new XMLApplicationContext("applicationContext.xml");
+			applicationContext.addEventListener(Event.COMPLETE, onApplicationContextLoad);
+			applicationContext.load();
+		}
+		
+		private function onApplicationContextLoad(event:Event):void {
+		}
+
+		
+	]]>
+	</mx:Script>
+	
+	<mx:HTTPService id="service" url="{model.serviceURL}" contentType="application/xml" resultFormat="e4x" />
+	<mx:Button id="callServiceButton" label="Check Service URL" click="Alert.show('service url is ' + service.url)" />
+	
+</mx:Application>

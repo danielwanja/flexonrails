@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" xmlns:containers="com.dougmccune.containers.*" backgroundColor="0x000000">
+	<containers:CoverFlowContainer id="coverFlowContainer" width="300" height="300">
+		<mx:Panel width="200" height="200">
+			<mx:Text id="flexText" text="Flex" fontSize="18" />
+		</mx:Panel>
+		<mx:Panel width="200" height="200" horizontalAlign="center">
+			<mx:Text id="meetText" text="Meet" fontSize="18" />
+		</mx:Panel>
+		<mx:Panel width="200" height="200" horizontalAlign="right">
+			<mx:Text id="railsText" text="Rails!" fontSize="18" />
+		</mx:Panel>
+	</containers:CoverFlowContainer>
+	<mx:HScrollBar
+		id="coverFlowScroller"
+		width="{coverFlowContainer.width}"
+		pageSize="1"
+		maxScrollPosition="{coverFlowContainer.numChildren - 1}"
+		scrollPosition="{coverFlowContainer.selectedIndex}"
+		scroll="coverFlowContainer.selectedIndex = Math.round(coverFlowScroller.scrollPosition)" />
+</mx:Application>

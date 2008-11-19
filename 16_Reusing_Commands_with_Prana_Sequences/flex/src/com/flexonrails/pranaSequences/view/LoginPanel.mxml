@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Label text="Login To FlexNotes" styleName="headerLabel" top="{loginPanel.x - 100}" horizontalCenter="0" />
+	<mx:Panel id="loginPanel" width="250" height="200" layout="vertical" verticalCenter="0" horizontalCenter="0" title="Log in">
+	
+		<mx:Script>
+		<![CDATA[
+			import com.flexonrails.pranaSequences.sequences.LoginSequence;
+			
+			public function login():void {
+				new LoginSequence(usernameText.text, passwordText.text).dispatch();
+			}
+			
+		]]>
+		</mx:Script>
+	
+		<mx:Label text="User name"/>
+		<mx:TextInput id="usernameText" enter="login()" />
+		<mx:Label text="Password"/>
+		<mx:TextInput id="passwordText" displayAsPassword="true" enter="login()" />
+		<mx:Button id="loginButton" label="Log in" click="login()" />
+	</mx:Panel>
+</mx:Canvas>

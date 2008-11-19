@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" applicationComplete="init()">
+	<mx:Script>
+	
+		import flash.external.*;
+		
+		[Bindable]
+		private var htmlSaysText:String;
+		
+		public function init():void {
+			if (ExternalInterface.available) {
+				ExternalInterface.addCallback("htmlSays", htmlSays)
+			}
+		}
+		
+		public function htmlSays(s:String):void {
+			htmlSaysText = "got something"
+			htmlSaysText = s;
+		}
+		
+		public function tellHtml():void {
+			var s:String = tellHtmlText.text;
+			if (ExternalInterface.available) {
+				ExternalInterface.call("flexSays", s);
+			}
+		}
+	
+	</mx:Script>
+	
+	
+	<mx:Label id="tellHtmlLabel" text="Tell HTML:" />
+	<mx:TextInput id="tellHtmlText" enter="tellHtml()" />
+	<mx:Button id="tellHtmlButton" label="Tell Html!" click="tellHtml()" />
+	
+	<mx:Label id="htmlSaysLabel" text="HTML Says:" />
+	<mx:Label id="htmlSaysContent" text="{htmlSaysText}" />
+	
+</mx:Application>

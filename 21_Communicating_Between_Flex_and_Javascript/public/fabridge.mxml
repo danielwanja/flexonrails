@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical">
+
+	<fab:FABridge xmlns:fab="bridge.*" />
+
+	<mx:Panel id="unsuspectingPanel" width="200" height="200" title="Unsuspecting Panel">
+	
+	</mx:Panel>
+
+</mx:Application>

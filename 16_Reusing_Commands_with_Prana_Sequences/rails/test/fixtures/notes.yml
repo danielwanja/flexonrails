@@ -1,0 +1,12 @@
+quentin_grocery_list:
+  content: |
+    * Amazing thing
+    * Amazing thing
+    * Amazing thing
+  title: Grocery List
+  user: quentin
+
+aaron_grocery_list:
+  content: Milk
+  title: Grocery List
+  user: aaron

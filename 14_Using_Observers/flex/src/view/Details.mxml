@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" backgroundColor="#FFFFFF" top="10" left="0" right="10" height="200" creationComplete="init()">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.utils.ArrayUtil;
+			import mx.utils.StringUtil;
+			import mx.events.PropertyChangeEvent;
+			import mx.binding.utils.ChangeWatcher;
+			import model.BlogModel;
+			
+			[Bindable] private var blogModel:BlogModel = BlogModel.getInstance();
+			
+			[Bindable] private var characterCount:int;
+			[Bindable] private var wordCount:int;
+			
+			private function init():void {
+				var postingChangeWatcher:ChangeWatcher = ChangeWatcher.watch(blogModel, "entryRawText", calculateEntryText);
+			}
+			
+			private function calculateEntryText(pce:PropertyChangeEvent=null):void {
+				calculateWordCount(blogModel.entryRawText);
+				calculateCharacterCount(blogModel.entryRawText);
+			}
+			
+			// simple and dumb. Doesn't scale :)
+			private function calculateWordCount(text:String):void {
+				var words:Array = []
+				var wordsWithTrailingSpaces:Array = text.split(' ');
+				// because split is stupid and counts null strings
+				// and there's no string.chomp
+				wordsWithTrailingSpaces.forEach( function(item:*, index:int, array:Array):void {
+					if (item != "") {
+						words.push(item)
+					}
+				});
+				wordCount = words.length;
+			}
+			
+			// simple and dumb. Doesn't scale :)
+			private function calculateCharacterCount(text:String):void {
+				var characters:Array = [];
+				var charactersWithSpaces:Array = text.split('');
+				charactersWithSpaces.forEach( function(item:*, index:int, array:Array):void {
+					var s:String = item as String;
+					if (s.match(new RegExp(/\w/)) && item != "") {
+						characters.push(item)
+					}
+				});
+				characterCount = characters.length;
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Label id="statisticsLable" text="Statistics" fontWeight="bold" />
+	<mx:Text id="characterCountText" text="characters: {characterCount}" fontSize="18" />
+	<mx:Text id="wordCountText" text="word count: {wordCount}" fontSize="18" />
+	<mx:Label id="htmlLable" text="Flash HTML" fontWeight="bold" />
+	<mx:TextArea id="previewHTMLText" text="{BlogModel.getInstance().entryHTMLText}" enabled="true" selectable="false" wordWrap="true" width="100%" height="100%" />
+</mx:VBox>

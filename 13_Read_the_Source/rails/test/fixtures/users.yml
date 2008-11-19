@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+mega_corp_ceo:
+  full_name: J. Sterling Wiltshire III
+  company_id: 1
+
+mega_corp_vp:
+  full_name: Richard Hamilton, Esquire
+  company_id: 1
+
+john_smith:
+  full_name: John Smith
+  company_id: 2

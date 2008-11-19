@@ -1,0 +1,260 @@
+<project name="Prana Sequences Cookbook Recipe Build" >
+	
+	<!-- load project configuration properties -->
+	<property file="build/project.properties" />
+	
+	<!-- load user configuration properties -->
+	<property file="build/user.properties" />
+	
+	<!-- load cairngen configuration properties -->
+	<property file="cairngen/cairngen.properties" />
+	
+	<!-- load logging configuration properties -->
+	<property file="cairngen/log.properties" />
+	
+	<!-- locations -->
+	<property name="flex.source.dir" location="src" />
+	<property name="flex.build.dir" location="bin-debug" />
+	<property name="flex.lib.dir" location="lib" />
+	
+	<property name="mxmlc" value="${FLEX_HOME}/bin/mxmlc" />
+	
+	<!--  load the Ant-Contrib Tasks (http://ant-contrib.sourceforge.net/) -->	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	  <classpath>
+	    <pathelement location="${basedir}/cairngen/lib/ant-contrib-1.0b3.jar"/>
+	  </classpath>
+	</taskdef>
+
+	<!-- logging target, writes build output to log file -->
+    <target name="build-log" >
+        <record name="flex-build.log" action="start" append="false" />
+    </target>
+
+	<!-- 
+	//
+	// Cairngen Tasks
+	//
+	-->
+	<!-- logging target, writes build output to log file -->
+    <target name="log" >
+        <record name="${root.dir}/${log.file.name}.log" action="start" append="${log.append.to.file}" />
+    </target>
+
+    <!-- delete previously created directories and create default cairngorm directories.
+		 Not for the faint of heart. -->
+	<target name="clean-and-foolishly-lose-all-unsaved-work" depends="log, delete-cairngorm-directories, create-cairngorm-directories" />
+
+    <!-- create required cairngorm classes -->
+	<target name="create" depends="log, create-model-locator, create-front-controller, create-service-locator" />
+	
+    <!-- delete previously generated cairngorm directories -->
+	<target name="delete-cairngorm-directories" >
+		<echo>${log.delete.cairngorm.directories.message}</echo>
+		<delete dir="${project-uri}/${business.dir}" />
+        <delete dir="${project-uri}/${commands.dir}" />  
+		<delete dir="${project-uri}/${control.dir}"  />
+        <delete dir="${project-uri}/${events.dir}"   />
+		<delete dir="${project-uri}/${model.dir}"    />
+        <delete dir="${project-uri}/${view.dir}"     /> 
+		<delete dir="${project-uri}/${vo.dir}"       />
+	</target>
+	
+	<!-- create default cairngorm project directories -->
+	<target name="create-cairngorm-directories" >
+		<echo>${log.create.cairngorm.directories.message}</echo>
+        <mkdir dir="${project-uri}/${business.dir}" />
+        <mkdir dir="${project-uri}/${commands.dir}" />  
+		<mkdir dir="${project-uri}/${control.dir}"  />
+        <mkdir dir="${project-uri}/${events.dir}"   />
+		<mkdir dir="${project-uri}/${model.dir}"    />
+        <mkdir dir="${project-uri}/${view.dir}"     /> 
+		<mkdir dir="${project-uri}/${vo.dir}"       />
+	</target>
+
+	<!-- create default cairngorm project ModelLocator -->
+	<target name="create-model-locator" >
+		<echo>${log.model.locator.message}</echo>
+		<copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/ModelLocator.tpl" tofile="${project-uri}/${model.dir}/${project.name}ModelLocator.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="projectname" value="${project.name}" />
+	                <token key="namespace"   value="${namespace}"    />
+	                <token key="model"       value="${model.dir}"    />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	</target>
+    
+    <!-- create default cairngorm project FrontController -->
+	<target name="create-front-controller" >
+	    <echo>${log.front.controller.message}</echo>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/FrontController.tpl" tofile="${project-uri}/${control.dir}/${project.name}Controller.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="projectname" value="${project.name}" />
+	                <token key="namespace"   value="${namespace}"    />
+	                <token key="control"     value="${control.dir}"  />
+	                <token key="events"      value="${events.dir}"   />
+	                <token key="commands"    value="${commands.dir}" />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	</target>
+	
+	<target name="add-command-to-front-controller" >
+		<echo>adding ${command} command to the front controller</echo>
+		<replaceregexp 
+            match="(\s+)\/\/ add commands"
+            replace="\1\/\/ add commands\1addCommand(${command}Event.${command}_Event, ${command}Command);"
+            file="${project-uri}/${control.dir}/${project.name}Controller.as"
+            />
+	</target>
+	
+	<!-- create default cairngorm project ServiceLocator -->
+	<target name="create-service-locator" >
+		<echo>${log.service.locator.message}</echo>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/Services.tpl" tofile="${project-uri}/${business.dir}/Services.mxml" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="namespace" value="${namespace}" />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	</target>
+	
+	
+	<!--  ask the user the name of the command -->
+	<target name="create-sequence-include-delegate-from-user-input" depends="log" >
+	
+		<input message="Enter the sequence name"
+            addproperty="input.name"/>
+       
+       	<antcall target="_create-sequence-include-delegate">
+				<param name="sequence" value="${input.name}"/>
+		</antcall>     
+        
+               
+	</target>
+	<target name="gen-sequence-delegate" depends="create-sequence-include-delegate-from-user-input" />
+	
+	<!--  use the value defined in the props file -->
+	<target name="create-sequence-include-delegate-from-prop-file" depends="log" >
+	
+		<foreach list="${sequence.name}" param="sequence" target="_create-sequence-include-delegate"/>	
+	
+	</target>
+	
+	
+	<!-- create cairngen incluse delegate sequence, generates: Event, Command, Delegate -->
+	<target name="_create-sequence-include-delegate" depends="log" >
+		
+                 
+		<echo>${log.message} ${log.generating.message} ${sequence}Event.as, ${sequence}Command.as, ${sequence}Delegate.as</echo>
+		
+		<copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/Event.tpl" tofile="${project-uri}/${events.dir}/${sequence}Event.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="sequence"  value="${sequence}" />
+	                <token key="namespace" value="${namespace}"     />
+	                <token key="events"    value="${events.dir}"    />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/CommandIncludeDelegate.tpl" tofile="${project-uri}/${commands.dir}/${sequence}Command.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="sequence"  value="${sequence}" />
+	                <token key="namespace" value="${namespace}"     />
+	                <token key="events"    value="${events.dir}"    />
+	                <token key="commands"  value="${commands.dir}"  />
+	                <token key="business"  value="${business.dir}"  />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/BusinessDelegate.tpl" tofile="${project-uri}/${business.dir}/${sequence}Delegate.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="sequence"  value="${sequence}" />
+	                <token key="namespace" value="${namespace}"     />
+	                <token key="business"  value="${business.dir}"  />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	    
+	    <!--  add the newly created command to the front controller -->
+	    <antcall target="add-command-to-front-controller">
+				<param name="command" value="${sequence}"/>
+		</antcall>  
+	    
+	</target>
+	
+	<!--  ask the user the name of the command -->
+	<target name="create-sequence-exclude-delegate-from-user-input" depends="log">
+
+		<input message="Enter the sequence name"
+			addproperty="input.name" />
+
+		<antcall target="_create-sequence-exclude-delegate">
+			<param name="sequence" value="${input.name}" />
+		</antcall>
+
+	</target>
+	<target name="gen-sequence" depends="create-sequence-exclude-delegate-from-user-input" />
+
+	<!--  use the value defined in the props file -->
+	<target name="create-sequence-exclude-delegate-from-prop-file" depends="log">
+
+		<foreach list="${sequence.name}" param="sequence"
+			target="_create-sequence-exclude-delegate" />
+
+	</target>
+
+	<!-- create cairngen exclude-delegate-sequence, generates: Event, Command -->
+	<target name="_create-sequence-exclude-delegate" depends="log" >
+		
+		<echo>${log.message} ${log.generating.message} ${sequence}Event.as, ${sequence}Command.as</echo>
+	    
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/Event.tpl" tofile="${project-uri}/${events.dir}/${sequence}Event.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="sequence"  value="${sequence}" />
+	                <token key="namespace" value="${namespace}"     />
+	                <token key="events"    value="${events.dir}"    />          
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/CommandExcludeDelegate.tpl" tofile="${project-uri}/${commands.dir}/${sequence}Command.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="sequence"  value="${sequence}" />
+	                <token key="namespace" value="${namespace}"     />
+	                <token key="events"    value="${events.dir}"    />
+	                <token key="commands"  value="${commands.dir}"  />
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	    
+	    <!--  add the newly created command to the front controller -->
+	    <antcall target="add-command-to-front-controller">
+				<param name="command" value="${sequence}"/>
+		</antcall>  
+		
+	</target>
+	
+	<!-- create caringorm value object -->
+	<target name="create-value-object" >
+		<echo>${log.value.object.message}</echo>
+	    <copy file="${cairngorm.templates.dir}/${cairngorm.framework.name}${cairngorm.version}/ValueObject.tpl" tofile="${project-uri}/${vo.dir}/${vo.name}VO.as" overwrite="${overwrite.existing.files}" >
+	        <filterchain>
+	           <replacetokens>
+	                <token key="vo"        value="${vo.name}"   />
+	                <token key="namespace" value="${namespace}" />
+                    <token key="vo.dir"    value="${vo.dir}"    />           
+	            </replacetokens>
+	        </filterchain>
+	    </copy>
+	</target>
+	
+</project>
+

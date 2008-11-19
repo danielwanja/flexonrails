@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:view="view.*" backgroundColor="#000000">
+	<mx:HDividedBox top="0" bottom="0" left="0" right="0">
+		<view:Editor id="editor" width="60%" height="100%" />
+		<view:Details id="preview" width="40%" height="100%" />
+	</mx:HDividedBox>
+</mx:Application>

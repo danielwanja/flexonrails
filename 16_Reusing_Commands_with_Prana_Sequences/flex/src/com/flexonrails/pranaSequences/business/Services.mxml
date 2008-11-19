@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator xmlns:mx="http://www.adobe.com/2006/mxml" 
+	                      xmlns:cairngorm="com.adobe.cairngorm.business.*" >
+	
+	<mx:Script>
+	<![CDATA[
+
+		public static const NOTES_SERVICE:String	= 'notesService';		
+		public static const SESSIONS_SERVICE:String	= 'sessionService';		
+
+		[Bindable]
+		private var gateway:String = "http://localhost:3000/rubyamf_gateway";
+		
+	]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="sessionService" destination="rubyamf" endpoint="{gateway}" source="SessionsController" />
+	<mx:RemoteObject id="notesService" destination="rubyamf" endpoint="{gateway}" source="NotesController" />
+
+</cairngorm:ServiceLocator>

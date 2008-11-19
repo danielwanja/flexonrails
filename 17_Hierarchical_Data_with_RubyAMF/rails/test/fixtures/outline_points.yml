@@ -1,0 +1,97 @@
+--- 
+outline_points_005: 
+  updated_at: 2008-06-22 22:48:53
+  lft: "17"
+  id: "5"
+  label: "1.1"
+  rgt: "18"
+  parent_id: "2"
+  created_at: 2008-06-22 22:48:53
+outline_points_006: 
+  updated_at: 2008-06-22 22:49:04
+  lft: "15"
+  id: "6"
+  label: "1.2"
+  rgt: "16"
+  parent_id: "2"
+  created_at: 2008-06-22 22:49:04
+outline_points_007: 
+  updated_at: 2008-06-22 22:49:14
+  lft: "13"
+  id: "7"
+  label: "1.3"
+  rgt: "14"
+  parent_id: "2"
+  created_at: 2008-06-22 22:49:14
+outline_points_008: 
+  updated_at: 2008-06-22 22:49:31
+  lft: "11"
+  id: "8"
+  label: "2.1"
+  rgt: "12"
+  parent_id: "3"
+  created_at: 2008-06-22 22:49:31
+outline_points_009: 
+  updated_at: 2008-06-22 22:49:43
+  lft: "9"
+  id: "9"
+  label: "2.2"
+  rgt: "10"
+  parent_id: "3"
+  created_at: 2008-06-22 22:49:43
+outline_points_010: 
+  updated_at: 2008-06-22 22:49:51
+  lft: "7"
+  id: "10"
+  label: "2.3"
+  rgt: "8"
+  parent_id: "3"
+  created_at: 2008-06-22 22:49:51
+outline_points_011: 
+  updated_at: 2008-06-22 22:50:06
+  lft: "5"
+  id: "11"
+  label: "3.1"
+  rgt: "6"
+  parent_id: "4"
+  created_at: 2008-06-22 22:50:06
+outline_points_012: 
+  updated_at: 2008-06-22 22:50:15
+  lft: "3"
+  id: "12"
+  label: "3.2"
+  rgt: "4"
+  parent_id: "4"
+  created_at: 2008-06-22 22:50:15
+outline_points_001: 
+  updated_at: 2008-06-22 22:40:24
+  lft: "1"
+  id: "1"
+  label: An Outline
+  rgt: "24"
+  parent_id: 
+  created_at: 2008-06-22 22:40:24
+outline_points_002: 
+  updated_at: 2008-06-22 22:45:52
+  lft: "22"
+  id: "2"
+  label: "1"
+  rgt: "23"
+  parent_id: "1"
+  created_at: 2008-06-22 22:45:52
+outline_points_003: 
+  updated_at: 2008-06-22 22:47:50
+  lft: "20"
+  id: "3"
+  label: "2"
+  rgt: "21"
+  parent_id: "1"
+  created_at: 2008-06-22 22:47:50
+outline_points_004: 
+  updated_at: 2008-06-22 22:48:09
+  lft: "2"
+  id: "4"
+  label: "3"
+  rgt: "19"
+  parent_id: "1"
+  created_at: 2008-06-22 22:48:09

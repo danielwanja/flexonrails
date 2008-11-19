@@ -1,0 +1,30 @@
+FLEX_SRC='src'
+FLEX_LIB='libs'
+FLEX_BIN='bin-debug'
+
+task :default => :compile_main
+
+desc 'Compile Main.mxml'
+task :compile_main do
+  
+  Dir.chdir(FLEX_SRC) do
+    puts "Compiling Main.mxml"
+    sh %{ mxmlc -locale=en_US Main.mxml }
+    move 'Main.swf', "../#{FLEX_BIN}/", :verbose => true
+  end
+  
+end
+
+desc "Compile All Flex Applications in #{FLEX_SRC}"
+task :compile_all do
+  
+  Dir.chdir(FLEX_SRC) do
+    Dir["*.mxml"].each do |flex_file|
+      swf_file = flex_file.gsub /mxml/, 'swf'
+      puts "Compiling #{flex_file} => #{swf_file}"
+      sh %{ mxmlc -locale=en_US -library-path+=../#{FLEX_LIB} #{flex_file}}
+      move swf_file, "../#{FLEX_BIN}/", :verbose => true
+    end
+  end
+  
+end

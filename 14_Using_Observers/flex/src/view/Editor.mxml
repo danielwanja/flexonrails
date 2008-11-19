@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" backgroundColor="#000000" creationComplete="init()">
+
+	<mx:Script>
+	<![CDATA[
+		import mx.binding.utils.BindingUtils;
+		import model.BlogModel;
+		
+		private var blogModel:BlogModel = BlogModel.getInstance();
+		
+		private function init():void {
+			// Another possible way of binding using AS instead of MXML b
+//			BindingUtils.bindProperty(blogModel, "entryRawText", editor, "text");
+//			BindingUtils.bindProperty(blogModel, "entryHTMLText", editor, "htmlText");
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:Binding source="editor.text" destination="blogModel.entryRawText" />
+	<mx:Binding source="editor.htmlText" destination="blogModel.entryHTMLText" />
+
+	<mx:RichTextEditor id="editor" width="100%" height="100%" />
+</mx:Canvas>

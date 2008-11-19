@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Text id="flexText" text="Flex Meet Rails!" fontSize="18" verticalCenter="0" horizontalCenter="0" />
+</mx:Application>

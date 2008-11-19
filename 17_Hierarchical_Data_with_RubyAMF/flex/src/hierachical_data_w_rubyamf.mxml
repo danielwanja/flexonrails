@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:business="com.flexonrails.outliner.business.*"
+	xmlns:control="com.flexonrails.outliner.control.*"
+	xmlns:view="com.flexonrails.outliner.view.*"
+	backgroundColor="0x000000"
+	layout="absolute"
+	applicationComplete="init()"
+>
+	
+	<mx:Script>
+	<![CDATA[
+		import com.flexonrails.outliner.model.OutlinePointTreeDataDescriptor;
+		import com.flexonrails.outliner.vo.OutlinePoint;
+		import mx.controls.Alert;
+		import com.flexonrails.outliner.events.LoadOutlinePointsEvent;
+		import com.flexonrails.outliner.model.ModelLocator;
+		
+		[Bindable]
+		private var model:ModelLocator = ModelLocator.getInstance();
+		
+		private function init():void {
+			new LoadOutlinePointsEvent().dispatch();
+		}
+		
+	]]>
+	</mx:Script>
+	
+	<mx:Style>
+		.headerLabel {
+			color: #FFFFFF;
+			fontSize: 18pt;
+		}
+	</mx:Style>
+	
+	<business:Services id="services" />
+	<control:OutlinerController id="controller" />
+	
+	<mx:Tree id="outlineTree"
+		width="300"
+		height="500"
+		verticalCenter="0"
+		horizontalCenter="0"
+		dataProvider="{model.outlinePoints}"
+		dataDescriptor="{new OutlinePointTreeDataDescriptor()}"
+	/>
+</mx:Application>
