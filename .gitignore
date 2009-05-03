@@ -3,5 +3,6 @@ bin
 tmp/**/*
 doc/api
 doc/app
+*.log
 *.sqlite3
 .DS_Store
