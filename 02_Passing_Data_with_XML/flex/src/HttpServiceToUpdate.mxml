@@ -14,12 +14,14 @@
 <mx:HTTPService id="index" 
   url="http://localhost:3000/people.xml" resultFormat="e4x" />
 <mx:HTTPService id="update"
-  url="http://localhost:3000/people/{grid.selectedItem.id}.xml?_method=put" 
+  url="http://localhost:3000/people/{grid.selectedItem.id}.xml" 
   contentType="application/xml"
   resultFormat="e4x"
   method="POST"
   fault="mx.controls.Alert.show(event.toString())"
-  result="index.send()" />
+  result="index.send()"
+  headers="{{X_HTTP_METHOD_OVERRIDE:'put'}}"
+   />
 <mx:DataGrid id="grid" 
   dataProvider="{index.lastResult.person}" width="100%" height="50%" >
     <mx:columns>

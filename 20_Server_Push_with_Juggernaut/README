@@ -6,12 +6,14 @@ $ sudo gem install json
 $ sudo gem install eventmachine
 $ sudo gem install juggernaut
 
-Configure juggernaut
+Install the juggernaut plugin
+$ ./script/plugin install git://github.com/maccman/juggernaut_plugin.git
+
+Configure and start juggernaut
 
 $ juggernaut -g config/juggernaut.yml
 $ juggernaut -c config/juggernaut.yml
 
-Install the juggernaut plugin
-$ ./script/plugin install http://juggernaut.rubyforge.org/svn/trunk/juggernaut
+Start Rails: ./script/server
 
 On the Flex side the main application is IM.mxml and is a simplistic chat client.

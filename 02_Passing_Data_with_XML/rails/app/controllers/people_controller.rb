@@ -6,7 +6,7 @@ class PeopleController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @people }
+      format.xml  { render :xml => @people.to_xml }
     end
   end
 
@@ -66,7 +66,7 @@ class PeopleController < ApplicationController
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @person.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => @person.errors} #, :status => :unprocessable_entity }
       end
     end
   end

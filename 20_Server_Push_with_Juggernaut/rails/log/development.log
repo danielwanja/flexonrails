@@ -1,0 +1,10 @@
+
+
+Processing MessengerController#message (for 127.0.0.1 at 2009-05-02 15:41:30) [POST]
+  Parameters: {"message"=>"yo", "user"=>"me"}
+Completed in 3ms (View: 1, DB: 0) | 200 OK [http://localhost/messenger/message]
+
+
+Processing MessengerController#message (for 127.0.0.1 at 2009-05-02 15:41:44) [POST]
+  Parameters: {"message"=>"yo", "user"=>"ohter"}
+Completed in 5ms (View: 3, DB: 0) | 200 OK [http://localhost/messenger/message]

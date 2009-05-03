@@ -67,10 +67,11 @@
     contentType="application/xml" 
     result="resultHandler(event)" />
 <mx:HTTPService id="categoriesUpdate"
- url="http://localhost:3000/categories/{grid.selectedItem.@id}.xml?_method=put"
+ url="http://localhost:3000/categories/{grid.selectedItem.@id}.xml"
     method="POST" 
     resultFormat="e4x"  
     contentType="application/xml" 
+ 	headers="{{X_HTTP_METHOD_OVERRIDE:'put'}}"    
     result="resultHandler(event)" />
 <mx:HTTPService id="categoriesDelete"
     url="http://localhost:3000/categories/{grid.selectedItem.@id}.xml"

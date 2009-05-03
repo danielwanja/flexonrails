@@ -27,9 +27,11 @@
 </mx:HTTPService>        
 
 <mx:HTTPService id="noteUpdate"
-  url="http://localhost:3000/notes/id.xml?_method=put"
+  url="http://localhost:3000/notes/id.xml"
   method="POST"
   resultFormat="e4x"
-  contentType="application/xml" />    
+  contentType="application/xml"
+  headers="{{X_HTTP_METHOD_OVERRIDE:'put'}}"
+/>    
 </cairngorm:ServiceLocator>
 

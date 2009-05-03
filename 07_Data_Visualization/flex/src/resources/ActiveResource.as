@@ -119,6 +119,7 @@ package resources
 			http.url = id ? HOST+resource : HOST+resources;			
 			if (customVerb!=null) http.url += "/"+customVerb
 			if (http==destroy) http.url += "?_method=delete"  //FIXME: use encode URL.
+			if (http==update) http.headers={X_HTTP_METHOD_OVERRIDE:'put'};			
 			http.method = method;
 			http.resultFormat = "e4x";
 			http.contentType = "application/xml";

@@ -52,7 +52,7 @@
             
                 <mx:HLOCSeries id="hlSerie"  
                 	openField="open" highField="high" 
-                	lowField="low" closeField="close" >
+                	lowField="low" closeField="close">
 					<mx:verticalAxis>
 	                   <mx:LinearAxis id="v1"  baseAtZero="false" title="Price" />
 	                </mx:verticalAxis>                                  	

@@ -48,15 +48,18 @@
     method="POST" resultFormat="e4x" contentType="application/xml"
     result="accountsIndex.send()"  />
 <mx:HTTPService id="accountsUpdate"
- url="{CONTEXT_URL}/accounts/{accountsGrid.selectedItem.id}?_method=put"
-    method="POST" resultFormat="e4x"  contentType="application/xml"  />
+ url="{CONTEXT_URL}/accounts/{accountsGrid.selectedItem.id}"
+    method="POST" resultFormat="e4x"  contentType="application/xml"  
+    headers="{{X_HTTP_METHOD_OVERRIDE:'put'}}"
+    />
 <mx:HTTPService id="accountsDelete"  
     url="{CONTEXT_URL}/accounts/{accountsGrid.selectedItem.id}"
-    method="POST" resultFormat="e4x" contentType="application/xml"
-    result="accountsIndex.send()" >
-  <mx:request>
-    <_method>delete</_method>
-  </mx:request>  
+    method="POST"    
+    result="accountsIndex.send()" 
+    headers="{{X_HTTP_METHOD_OVERRIDE:'delete'}}">
+	<mx:request>
+	   <flex>true</flex>
+	</mx:request> 	
 </mx:HTTPService>
 
 <!-- POSITIONS -->
@@ -76,9 +79,11 @@
     result="positionsIndex.send()"  />
 <mx:HTTPService id="positionsDelete"
   url="{CONTEXT_URL}/{positionsPrefix}/positions/
-     {positionsGrid.selectedItem.id}?_method=delete"
+     {positionsGrid.selectedItem.id}"
     method="POST" resultFormat="e4x" contentType="application/xml"
-    result="positionsIndex.send()">
+    result="positionsIndex.send()"
+    headers="{{X_HTTP_METHOD_OVERRIDE:'delete'}}"
+    >
 </mx:HTTPService>
 
 <!-- MOVEMENTS -->
