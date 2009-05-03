@@ -41,7 +41,7 @@ package flexonrails.examples.notetaker.business
       call.addResponder(this.responder);      
     }
     public function update(note:XML):void {
-      this.noteUpdateService.url = "http://localhost:3000/notes/"+note.id.toString()+".xml?_method=put"
+      this.noteUpdateService.url = "http://localhost:3000/notes/"+note.id.toString()+".xml"
       var call:AsyncToken = this.noteUpdateService.send(note);
       call.addResponder(this.responder);      
     }
